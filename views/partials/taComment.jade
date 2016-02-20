@@ -7,6 +7,8 @@ div(ng-repeat = 'student in data')
 		div(ng-show='neverJudged(student.index)')
 			p Download His Latest Source 
 				a(ng-href='{{getLocation(student.index)}}') {{getName(student.index)}}
+			p(ng-show='haveGithub(student.index)') his Github URL
+				a(ng-href='getGithub(student.index)') {{getGithub(student.index)}}.
 			br
 			a(ng-href='{{getHref(student.index)}}') Judge Him!
 		div(ng-hide='neverJudged(student.index)')

@@ -157,6 +157,24 @@ function TaCommentCtrl($scope , $http , $location , $routeParams) {
         return "Error";
       }
     };
+
+    $scope.haveGithub = function(index) {
+      if (!$scope.getLength(index) || !$scope.data[index].source[$routeParams.id].github || $scope.data[index].source[$routeParams.id].github == '#') {
+        return false;
+      } else {
+        return true;
+      }
+    };
+
+
+    $scope.getGithub = function(index) {
+      if ($scope.haveGithub(index)) {
+        return $scope.data[index].source[$routeParams.id].github;
+      } else {
+        return "NO Github!";
+      }
+    };
+
     $scope.getName = function(index) {
       var x = $scope.getLocation(index);
       if (x != "Error") {
@@ -367,6 +385,14 @@ function CommentCtrl($scope , $http , $location , $routeParams) {
       else return false;
     };
 
+    $scope.haveTAComment = function() {
+      if (!$scope.taComment || $scope.taComment.length == 0) {
+        return false;
+      } else {
+        return true;
+      }
+    };
+
     $scope.sendComments = function() {
         $http.get('/api/sendComment/' + $routeParams.id).
             success(function(data) {
@@ -402,6 +428,13 @@ function CommentCtrl($scope , $http , $location , $routeParams) {
       return x.toDateString() + " " + x.toTimeString();
     };
 
+    $scope.haveGithub = function(comment) {
+      if (!comment.receiverGithub || comment.receiverGithub == '#') {
+        return false;
+      } else {
+        return true;
+      }
+    };
     $scope.getName = function(path) {
       var t = path.lastIndexOf('/');
       console.log(t);

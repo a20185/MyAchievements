@@ -749,6 +749,7 @@ exports.postJudge = function(req , res , next) {
     "receiverName": "noname",
     "receiverGroup": "-1",
     "receiverSource": req.session.user.judgeStudents[studentId].source[assId].submissions[submitId],
+    "receiverGithub": req.session.user.judgeStudents[studentId].source[assId].github,
     "score": req.body.score
   };
 
@@ -962,7 +963,7 @@ exports.upload = function(req, res, next) {
                       });
                     } else {
                       console.log("Hisgtoup:");
-                      console.log(doc);
+                      // console.log(doc);
                       var tellingGroup = doc.bematchGroup[req.body.id];
                       Groups.findOne({
                         index: tellingGroup
@@ -974,7 +975,7 @@ exports.upload = function(req, res, next) {
                               why: "Group Nonexist!"
                             });
                           } else {
-                            console.log(doc);
+                            console.log(doc.students);
                             for (var i = 0 ; i < 10 ; i++) {
                               (function(student) {
                                 // Update Each Student's CommentPlace

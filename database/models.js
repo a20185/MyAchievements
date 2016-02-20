@@ -13,7 +13,7 @@ module.exports = {
         judgeGroup: {type: Array , required: true},
         judgeStudents: {type: Array , required: true},
         correspondTA: {type: String , required: true},
-        assignments : {type: Array , required: true}
+        assignments : {type: Array , required: true},
     },
 
     group: {
@@ -80,6 +80,7 @@ module.exports = {
         position: {type: Object , required: true},
         ended: {type: Boolean , required: true},
         source: {type: Object , required: true},
-        github: {type: String}
+        github: {type: String},
+        scorelist: {type: Array}
     }
 };

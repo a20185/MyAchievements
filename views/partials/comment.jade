@@ -20,7 +20,10 @@ div
             div(ng-hide='editBefore(comment.score)')
                 a(ng-href='/edit/{{getAss()}}/{{comment.index}}') Write Comment
                 |  -
+                p to {{comment.receiverId}}
             a(ng-href='{{comment.receiverSource}}') Download his Source
+            |  -
+            a(ng-show='haveGithub(comment)' , ng-href='{{comment.receiverGithub}}') Github Address
 
     div(ng-show='recd()')
         h3 Total Recevied {{recvs.length}} Comments.
@@ -30,10 +33,17 @@ div
                 a(ng-href='{{comment.receiverSource}}') {{getName(comment.receiverSource)}}
             p {{comment.body}}
             p Evaluation: {{comment.score}} points.
+            p(ng-show='haveGithub(comment)') Github Location : 
+                a(ng-href='{{comment.receiverGithub}}'){{comment.receiverGithub}}
 
     div(ng-show='tata()')
-        h3 Final Score : {{taComment[0].score}}.
-        p Ta Comments: {{taComment[0].title}}
-        h6(align=right) --- Edited on {{getTime(taComment[0].timeStamp)}} , of your final Submission 
-            a(ng-href='{{taComment[0].receiverSource}}') {{getName(taComment[0].receiverSource)}}
-        p {{taComment[0].body}}
+        div(ng-show='haveTAComment()')
+            h3 Final Score : {{taComment[0].score}}.
+            p Ta Comments: {{taComment[0].title}}
+            h6(align=right) --- Edited on {{getTime(taComment[0].timeStamp)}} , of your final Submission 
+                a(ng-href='{{taComment[0].receiverSource}}') {{getName(taComment[0].receiverSource)}}
+            p {{taComment[0].body}}
+        div(ng-hide='haveTAComment()')
+            p TA haven't Judge On You.
+            p Probably You haven't Upload Your Source or TA is busy now!
+            p Please Wait Or Contact Your TA!
