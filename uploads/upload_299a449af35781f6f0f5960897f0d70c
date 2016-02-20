@@ -1,0 +1,20 @@
+107.181.155.172
+
+root 52013142
+
+
+{
+"server":"::",
+"server_port":"8080",
+"local_address":"127.0.0.1",
+"local_port":1080,
+"port_password": {
+        "8388":"ss_open",
+        "6666":"default",
+        "2333":"52013142"
+},
+"timeout":300,
+"method":"aes-256-cfb",
+"fast_open":"false"
+}
+

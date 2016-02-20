@@ -1,0 +1,25 @@
+h2 New Assignment
+p Title:
+	input(ng-model='form.title' , name='title')
+p Description(URL):
+	input(ng-model='form.description' , name=description)
+div
+	p Start Time
+		input(ng-model='start.year' , placeholder = '{{starts.year}}')
+		p 年
+		input(ng-model='start.month' , placeholder = '{{starts.month}}')
+		p 月
+		input(ng-model='start.day' , placeholder = '{{starts.day}}')
+		p 日
+		input(ng-model='start.hour' , placeholder = '{{starts.hour}}')
+		p 时
+		input(ng-model='start.minute' , placeholder = '{{starts.minute}}')
+		p 分
+		input(ng-model='start.second' , placeholder = '{{starts.second}}')
+		p 秒
+div
+	p Duration
+	input(ng-model='duration' , placeholder='5') 
+	p days.
+
+button(ng-click='postAssignment()') Post Assignment!

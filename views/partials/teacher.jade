@@ -1,0 +1,18 @@
+h2 Welcome, Teacher {{currentUser}}
+p You have assigned {{ass.length}} assignments in total.
+
+div
+  p You can 
+    a(ng-href='/newAss') Post A new Assignment
+
+div(ng-repeat='assignment in ass')
+  h3 Homework {{assignment.job.index + 1}} : {{assignment.job.title}} , status: {{getStatus(assignment.index)}}.
+
+  //a(href='/submission/{{assignment.index}}') Submit Now!
+  //br
+
+  a(ng-href='/teacherComment/{{assignment.index}}') Judge Students' Submissions
+  br
+
+  a(href='{{assignment.job.refer}}') Description
+  |  -

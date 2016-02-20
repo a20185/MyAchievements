@@ -1,0 +1,26 @@
+extends layout
+
+block body
+  div(ng-controller='mainCtrl')
+    h2 My Blog
+    ul
+      li
+        a(href='/') Home
+      li
+        p(href='/login' , ng-hide='showAuth()') Guest
+        p(ng-show='showAuth()') {{currentUser}}
+      li
+        a(href='/addPost' , ng-show='showAuth()') Add a new post
+        a(href='/login' , ng-hide='showAuth()') Login
+      li
+        a(href='/register' , ng-hide='showAuth()') Register
+        a(href='/logout' , ng-show='showAuth()') Log Out!
+
+    div(ng-view)
+
+  script(src='js/lib/angular/angular.js')
+  script(src='js/app.js')
+  script(src='js/services.js')
+  script(src='js/controllers.js')
+  script(src='js/filters.js')
+  script(src='js/directives.js')

@@ -1,0 +1,13 @@
+h1 Judge on Homework {{getIndex()}}.
+
+div(ng-repeat = 'student in data')
+	h3 Student {{student.id}}
+	div(ng-hide='getLength(student.index)') This Student haven't Post any Assignments Yet
+	div(ng-show='getLength(student.index)')
+		div(ng-show='neverJudged(student.index)')
+			p Download His Latest Source 
+				a(ng-href='{{getLocation(student.index)}}') {{getName(student.index)}}
+			br
+			a(ng-href='{{getHref(student.index)}}') Judge Him!
+		div(ng-hide='neverJudged(student.index)')
+			p You have already Judged this Student.

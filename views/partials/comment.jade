@@ -1,0 +1,39 @@
+h1 Comment Page for Assignment {{assname}}
+
+button(ng-click='sendComments()') My Sent Comments
+br
+button(ng-click='recvComments()') My Recv Comments
+br
+button(ng-click='getScore()') my Final Scores
+div
+    div(ng-show='sent()')
+        h3 Total Sent {{sends.length}} Comments.
+        div(ng-repeat='comment in sends')
+            div(ng-show='editBefore(comment.score)')
+                h4 {{comment.title}}
+                h6(align='right') --- Commented to {{comment.receiverId}} , Edited on {{getTime(comment.timeStamp)}}.
+                p {{comment.body}}
+                p Evaluation: {{comment.score}} points.
+                br
+                a(ng-href='/edit/{{getAss()}}/{{comment.index}}') Edit this Comment
+                |  -
+            div(ng-hide='editBefore(comment.score)')
+                a(ng-href='/edit/{{getAss()}}/{{comment.index}}') Write Comment
+                |  -
+            a(ng-href='{{comment.receiverSource}}') Download his Source
+
+    div(ng-show='recd()')
+        h3 Total Recevied {{recvs.length}} Comments.
+        div(ng-repeat='comment in recvs')
+            h4 {{comment.title}}
+            h6(align='right') --- Edited on {{getTime(comment.timeStamp)}} , of Submission 
+                a(ng-href='{{comment.receiverSource}}') {{getName(comment.receiverSource)}}
+            p {{comment.body}}
+            p Evaluation: {{comment.score}} points.
+
+    div(ng-show='tata()')
+        h3 Final Score : {{taComment[0].score}}.
+        p Ta Comments: {{taComment[0].title}}
+        h6(align=right) --- Edited on {{getTime(taComment[0].timeStamp)}} , of your final Submission 
+            a(ng-href='{{taComment[0].receiverSource}}') {{getName(taComment[0].receiverSource)}}
+        p {{taComment[0].body}}

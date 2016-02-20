@@ -1,0 +1,9 @@
+form(method="post",enctype="multipart/form-data",action = '/upload')
+  input(type = 'text' , name = 'id' , ng-model='id')
+  //- input(type = 'password', name = 'password')
+  br
+  input(type = 'text' , name= 'github' , ng-model='github' , placeholder='github URL')
+  br
+  input(type = 'file' , name = 'thumbnail')
+  br
+  input(type = 'submit')

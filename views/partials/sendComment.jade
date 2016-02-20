@@ -1,0 +1,11 @@
+h2 Send Comment to Your Collegue {{comment.receiver}}
+p Title:
+input(ng-model='form.title' , name='title')
+br
+p Body:
+input(ng-model='form.body' , name='body')
+br
+p Score
+input(ng-model='form.score' , name='score')
+br
+button(ng-click='modify()') Send!

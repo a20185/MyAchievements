@@ -1,0 +1,9 @@
+h2 Comment on {{student}} of Assignment {{assName}}
+p title:
+input(ng-model='form.title', name='title')
+p body:
+textarea(ng-model='form.body', cols='50', rows='15')
+p Score:
+input(ng-model='form.score' , name='score')
+p
+  button(ng-click='postJudge()') Post Judgements!

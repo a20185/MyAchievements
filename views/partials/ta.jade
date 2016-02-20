@@ -1,0 +1,21 @@
+h1 Welcome , TA-{{currentUser}}
+p There are {{ass.length}} assignments to 
+p Currently {{ass.availableNum}} Available , {{ass.judging}} are Judging , {{ass.completed}} are finished.
+br
+
+div(ng-repeat='assignment in ass')
+  h3 Homework {{assignment.job.index + 1}} : {{assignment.job.title}}
+
+  //a(href='/submission/{{assignment.index}}') Submit Now!
+  //br
+
+  a(ng-href='/taComment/{{assignment.index}}') Judge Students' Submissions
+  br
+
+  a(href='{{assignment.job.refer}}') Description
+  |  -
+  //- a(ng-href='/comment/{{assignment.index}}') Comment
+  //- |  - 
+  //- a(ng-href='{{getSource(assignment.index)}}' , ng-show='haveSource(assignment.index)') My Source
+//- //  |  - 
+//- //  a(href='/deletePost/{{post.id}}') Delete
