@@ -383,6 +383,7 @@ exports.initSys = function(req , res , next) {
       // taMode.tas.sort(function() {return Math.random() > 0.5 ? -1 : 1;});
     }
 
+    // res.redirect('/');
 
     // Make TAS and Groups Students;
     for (var j = 0 ; j < 50 ; j++) {
@@ -416,6 +417,11 @@ exports.initSys = function(req , res , next) {
         })(k , kk);
       }
     }
+
+    res.json({
+      status: true,
+      why: "Please Wait a Little Bit"
+    });
 
     /**
      * [Group description] Create Database Structure for Groups.

@@ -8,4 +8,6 @@ br
 p Score
 input(ng-model='form.score' , name='score')
 br
-button(ng-click='modify()') Send!
+p
+	p(ng-hide='canClick()') {{getMsg()}}
+	button(ng-click='modify()' , ng-show='canClick()') Send!

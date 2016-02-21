@@ -7,4 +7,5 @@ textarea(ng-model='form.body', cols='50', rows='15')
 p Score:
 input(ng-model='form.score' , name='score')
 p
-  button(ng-click='reJudge()') Rejudge Him!
+  p(ng-hide='canClick()') {{getMsg()}}
+  button(ng-click='reJudge()' , ng-show='canClick()') Rejudge Him!

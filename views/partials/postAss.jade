@@ -22,4 +22,6 @@ div
 	input(ng-model='duration' , placeholder='5') 
 	p days.
 
-button(ng-click='postAssignment()') Post Assignment!
+p
+	p(ng-hide='canClick()') {{getMsg()}}
+	button(ng-click='postAssignment()' , ng-show='canClick()') Post Assignment!

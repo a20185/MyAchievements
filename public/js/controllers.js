@@ -7,8 +7,32 @@ var currentUser = 'null';
 
 /* Controllers */
 
-function mainCtrl($scope) {
+function mainCtrl($scope , $http) {
   $scope.currentUser = "Guest";
+  $scope.identity = "";
+  if (isTA == true) {
+    $scope.identity = "TA";
+  } else if (isTeacher == true) {
+    $scope.identity = "Teacher";
+  } else {
+    $scope.identity = "Student";
+  }
+
+  $http.get('/onlineStatus').
+    success(function(data) {
+      if (status == true) {
+        isLogin = true;
+        currentUser = data.username;
+        isTA = data.isTA;
+        isTeacher = data.isTeacher;
+      } else {
+        isLogin = false;
+        isRegister = false;
+        isTA = false;
+        isTeacher = false;
+        currentUser = 'null';
+      }
+    });
   $scope.showAuth = function() {
     if (currentUser != 'null') {
       $scope.currentUser = currentUser;
@@ -18,11 +42,11 @@ function mainCtrl($scope) {
     } else {
       return false;
     }
-  }
+  };
   $scope.hello = function() {
     console.log('HELLO');
     console.log(isLogin);
-  }
+  };
 }
 
 function TaCtrl($scope , $http , $location) {
@@ -83,6 +107,54 @@ function PostAssCtrl($scope , $http , $location) {
     $scope.starts.hour = date.getHours();
     $scope.starts.minute = date.getMinutes();
     $scope.starts.second = date.getSeconds();
+    $scope.getMsg = function() {
+      if (!$scope.form.title || $scope.form.title == '') {
+        return "Title is Required!";
+      } else if (!$scope.form.description || $scope.form.description == '') {
+        return "Description is Required!";
+      } else if (!$scope.start.year || $scope.start.year == '') {
+        return "Year is Required!";
+      } else if (isNaN($scope.start.year)) {
+        return "Year is A Integer!";
+      } else if (parseInt($scope.start.year) < $scope.starts.year) {
+        return "Year Must >= " + $scope.starts.year;
+      } else if (!$scope.start.month || $scope.start.month == '') {
+        return "month is Required!";
+      } else if (isNaN($scope.start.month)) {
+        return "month is A Integer!";
+      } else if (!$scope.start.day || $scope.start.day == '') {
+        return "day is Required!";
+      } else if (isNaN($scope.start.day)) {
+        return "day is A Integer!";
+      } else if (!$scope.start.hour || $scope.start.hour == '') {
+        return "hour is Required!";
+      } else if (isNaN($scope.start.hour)) {
+        return "hour is A Integer!";
+      } else if (!$scope.start.minute || $scope.start.minute == '') {
+        return "minute is Required!";
+      } else if (isNaN($scope.start.minute)) {
+        return "minute is A Integer!";
+      } else if (!$scope.start.second || $scope.start.second == '') {
+        return "second is Required!";
+      } else if (isNaN($scope.start.second)) {
+        return "second is A Integer!";
+      } else {
+        var one = date.getTime();
+        var two = (new Date(parseInt($scope.start.year) , parseInt($scope.start.month - 1) , parseInt($scope.start.day) , parseInt($scope.start.hour) , parseInt($scope.start.minute) , parseInt($scope.start.second))).getTime();
+        if (one > two) {
+          return "You can't Use this time!";
+        } else {
+          return "OK";
+        }
+      }
+    };
+    $scope.canClick = function() {
+      if ($scope.getMsg() == "OK") {
+        return true;
+      } else {
+        return false;
+      }
+    };
     $scope.postAssignment = function() {
       var myDate = new Date(parseInt($scope.start.year) , parseInt($scope.start.month - 1) , parseInt($scope.start.day) , parseInt($scope.start.hour) , parseInt($scope.start.minute) , parseInt($scope.start.second));
       $scope.form.timeStamp = myDate.getTime();
@@ -264,6 +336,31 @@ function JudgeCtrl($scope , $http , $location , $routeParams) {
   console.log($scope.submission);
   $scope.form = {};
   $scope.form.subId = $scope.submission;
+  $scope.warningMsg = '';
+  $scope.getMsg = function() {
+    if (!$scope.form.title || $scope.form.title == '') {
+      return "Title is Required!";
+    } else if (!$scope.form.body || $scope.form.body == '') {
+      return "Body is Required!";
+    } else if (!$scope.form.score || $scope.form.score == '') {
+      return "Score is Required!";
+    } else if (isNaN($scope.form.score)) {
+      return "Score is A Integer!";
+    } else if (parseInt($scope.form.score) < 0) {
+      return "Score Must > 0";
+    } else if (parseInt($scope.form.score) > 100) {
+      return "Score Must < 100";
+    } else {
+      return "OK";
+    }
+  };
+  $scope.canClick = function() {
+    if ($scope.getMsg() == 'OK') {
+      return true;
+    } else {
+      return false;
+    }
+  };
   $scope.postJudge = function() {
     $http.post('/postJudge/' + $routeParams.id + '/' + $routeParams.studentId + '/' + $routeParams.subIndex, $scope.form).
       success(function(data) {
@@ -281,7 +378,31 @@ function RejudgeCtrl($scope , $http , $location , $routeParams) {
       .success(function(data) {
         if (data.status == true) $location.path('/teacherComment/' + $routeParams.id);
       });
-  }
+  };
+  $scope.getMsg = function() {
+    if (!$scope.form.title || $scope.form.title == '') {
+      return "Title is Required!";
+    } else if (!$scope.form.body || $scope.form.body == '') {
+      return "Body is Required!";
+    } else if (!$scope.form.score || $scope.form.score == '') {
+      return "Score is Required!";
+    } else if (isNaN($scope.form.score)) {
+      return "Score is A Integer!";
+    } else if (parseInt($scope.form.score) < 0) {
+      return "Score Must > 0";
+    } else if (parseInt($scope.form.score) > 100) {
+      return "Score Must < 100";
+    } else {
+      return "OK";
+    }
+  };
+  $scope.canClick = function() {
+    if ($scope.getMsg() == 'OK') {
+      return true;
+    } else {
+      return false;
+    }
+  };
 }
 
 function AddPostCtrl($scope, $http, $location) {
@@ -607,6 +728,31 @@ function SendCtrl($scope , $http , $routeParams , $location) {
         $scope.comment = data.comment;
         console.log(data.why);
       });
+    $scope.getMsg = function() {
+      if (!$scope.form.title || $scope.form.title == '') {
+        return "Title is Required!";
+      } else if (!$scope.form.body || $scope.form.body == '') {
+        return "Body is Required!";
+      } else if (!$scope.form.score || $scope.form.score == '') {
+        return "Score is Required!";
+      } else if (isNaN($scope.form.score)) {
+        return "Score is A Integer!";
+      } else if (parseInt($scope.form.score) < 0) {
+        return "Score Must > 0";
+      } else if (parseInt($scope.form.score) > 100) {
+        return "Score Must < 100";
+      } else {
+        return "OK";
+      }
+    };
+
+    $scope.canClick = function() {
+      if ($scope.getMsg() == "OK") {
+        return true;
+      } else {
+        return false;
+      }
+    };
     $scope.modify = function() {
       console.log($scope.form);
       $http.post('/api/send/' + $routeParams.id + '/' + $routeParams.commentId , $scope.form).
@@ -634,7 +780,7 @@ function RegisterCtrl($scope , $http , $location , $routeParams , $window) {
   $scope.initSys = function() {
     $http.get('/inits').
       success(function(data) {
-        $window.alert(data.why);
+        $location.path('/');
       });
   };
 }
