@@ -133,7 +133,30 @@ function TaCommentCtrl($scope , $http , $location , $routeParams) {
       return $routeParams.id;
     };
     $scope.data = [];
+    $scope.sends = [];
     $scope.count = 0;
+    $scope.comment = false;
+
+    $scope.sender = function() {
+      console.log("LALALA");
+      $http.get('/api/sendComment/' + $routeParams.id).
+        success(function(data) {
+          console.log("NONONO");
+          $scope.sends = data.sends;
+          $scope.comment = true;
+        });
+    };
+
+    $scope.showHide = function() {
+      if ($scope.comment == true) {
+        return true;
+      } else {
+        return false;
+      }
+    };
+    $scope.getJudgeList = function() {
+      $scope.comment = false;
+    }
     $http.get('/getTACount/' + $routeParams.id).
       success(function(data) {
         if (data.count) $scope.count = data.count;
@@ -151,8 +174,8 @@ function TaCommentCtrl($scope , $http , $location , $routeParams) {
     };
     $scope.getLocation = function(index) {
       if ($scope.getLength(index)) {
-        console.log("test::");
-        console.log($scope.data[index].source[$routeParams.id]);
+        // console.log("test::");
+        // console.log($scope.data[index].source[$routeParams.id]);
         return $scope.data[index].source[$routeParams.id].submissions[$scope.data[index].source[$routeParams.id].submissions.length - 1];
       } else {
         return "Error";
@@ -170,13 +193,20 @@ function TaCommentCtrl($scope , $http , $location , $routeParams) {
     $scope.getSort = function() {
       $http.get('/sortByTA/' + $routeParams.id).
         success(function(data){
-          console.log('data.why');
+          // console.log('data.why');
           if (data.status == true) {
             $location.path('/');
           }
         });
     };
 
+    $scope.haveAGithub = function(sends) {
+      if (!sends.receiverGithub || sends.receiverGithub == '#') {
+        return false;
+      } else {
+        return true;
+      }
+    };
     $scope.getGithub = function(index) {
       if ($scope.haveGithub(index)) {
         return $scope.data[index].source[$routeParams.id].github;
@@ -205,10 +235,24 @@ function TaCommentCtrl($scope , $http , $location , $routeParams) {
       }
     };
 
+    $scope.getTime = function(timeStamp) {
+      if (timeStamp) {
+        var date = new Date(timeStamp);
+        var str = date.toDateString() + date.toTimeString();
+        return str;
+      } else {
+        return "Invalid Time";
+      }
+    };
+
     $scope.getHref = function(index) {
       var x = '/commentAss/' + $routeParams.id + '/' + index + '/' + ($scope.data[index].source[$routeParams.id].submissions.length - 1);
       return x;
     };
+
+    $scope.getSendComment = function(index) {
+
+    }
 }
 
 function JudgeCtrl($scope , $http , $location , $routeParams) {
@@ -226,6 +270,18 @@ function JudgeCtrl($scope , $http , $location , $routeParams) {
         $location.path('/taComment/' + $routeParams.id);
       });
   };
+}
+
+function RejudgeCtrl($scope , $http , $location , $routeParams) {
+  $scope.name = 14331000 + parseInt($routeParams.studentId);
+  $scope.number = parseInt($routeParams.id) + 1;
+  $scope.form = {};
+  $scope.reJudge = function() {
+    $http.post('/rejudge/' + $routeParams.id + '/' + $routeParams.studentId , $scope.form)
+      .success(function(data) {
+        if (data.status == true) $location.path('/teacherComment/' + $routeParams.id);
+      });
+  }
 }
 
 function AddPostCtrl($scope, $http, $location) {
@@ -607,6 +663,10 @@ function TeacherCommentCtrl($scope , $http , $location , $routeParams) {
       return true;
     }
   };
+
+  $scope.rejudge = function(index) {
+    return '/rejudge/' + $routeParams.id + '/' + index;
+  }
 
   $scope.getScore = function(index) {
     if (!$scope.data[index].source[$routeParams.id].tascore) {

@@ -28,6 +28,10 @@ angular.module('myApp', ['myApp.filters', 'myApp.services', 'myApp.directives'])
         templateUrl: 'partials/postAss',
         controller: PostAssCtrl
       }).
+      when('/rejudge/:id/:studentId' , {
+        templateUrl: 'partials/rejudge.jade',
+        controller: RejudgeCtrl
+      }).
       when('/commentAss/:id/:studentId/:subIndex' , {
           templateUrl: 'partials/commentAss',
           controller: JudgeCtrl

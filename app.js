@@ -85,6 +85,7 @@ app.post('/upload' , api.upload);
 app.get('/api/post/:id', api.post);
 app.post('/api/post', api.addPost);
 app.post('/newAss' , api.newAss);
+app.post('/reJudge/:id/:studentId' , api.rejudge);
 app.get('/sortByTA/:id' , api.sortByTA);
 app.get('/sortByTeacher/:id' , api.sortByTeacher);
 app.post('/postJudge/:id/:studentId/:submitId' , api.postJudge);

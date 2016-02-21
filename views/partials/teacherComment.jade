@@ -13,7 +13,7 @@ div(ng-repeat = 'student in data')
 		|  - 
 		a(ng-show='haveGithub(student.index)' , ng-href='{{getGithub(student.index)}}') Github Address
 		|  - 
-		a(ng-href='/rejudge/{{student.index}}') ReJudge Him!
+		a(ng-href='{{rejudge(student.index)}}') ReJudge Him!
 	div(ng-hide='taJudged(student.index)')
 		p Please Wait Because TA haven't Judge On this Student Yet!
 	br

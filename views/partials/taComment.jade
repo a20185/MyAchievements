@@ -2,7 +2,10 @@ h1 Judge on Homework {{getIndex()}}.
 p You have already Judge {{count}} Students.
 p You can choose to 
 	button(ng-click='getSort()') Sort The Student By Score
-div(ng-repeat = 'student in data')
+p Or Display Your
+	button(ng-click='sender()' , ng-hide='showHide()') Send Comments
+	button(ng-click='getJudgeList()' , ng-show='showHide()') Judge Lists
+div(ng-repeat = 'student in data' , ng-hide='showHide()')
 	h3 Student {{student.id}}
 	div(ng-hide='getLength(student.index)') This Student haven't Post any Assignments Yet
 	div(ng-show='getLength(student.index)')
@@ -15,3 +18,13 @@ div(ng-repeat = 'student in data')
 			a(ng-href='{{getHref(student.index)}}') Judge Him!
 		div(ng-hide='neverJudged(student.index)')
 			p You have already Judged this Student.
+h3(ng-show='showHide()') Total Sent {{sends.length}} Comments.
+div(ng-repeat = 'send in sends' , ng-show='showHide()')
+	h4 {{send.title}}
+	h6(align='right') --- Judged to {{send.receiverId}} , Edited on {{getTime(send.timeStamp)}}.
+	p {{send.body}}
+	p Evaluation: {{send.score}} points.
+	br
+	a(ng-href='{{send.receiverSource}}') Download his Source
+	|  -
+	a(ng-show='haveAGithub(send)' , ng-href='{{send.receiverGithub}}') Github Address

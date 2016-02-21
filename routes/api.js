@@ -614,7 +614,7 @@ exports.newAss = function(req , res , next) {
     /**
      * Update TA's Database
      */
-    
+
     for (var i = 1000 ; i < 1050 ; i++) {
       (function(index) {
         var taIndex = '1333' + '' + i;
@@ -636,6 +636,112 @@ exports.newAss = function(req , res , next) {
       })(i);
     }
 
+};
+
+
+exports.rejudge = function(req , res , next) {
+    /**
+     * Step 1 : Modify Teacher's Session Storage of TA-Score
+     *         And Sync to his Database
+     */
+    req.session.user.judgeStudents[req.params.studentId].source[req.params.id].tascore = req.body.score;
+    var newIndex = parseInt(req.params.studentId) + 14331000;
+    for (var i = 0 ; i < 1000 ; i++) {
+      if (req.session.user.assignments[req.params.id].scorelist[i].username == newIndex) {
+        req.session.user.assignments[req.params.id].scorelist[i].score = req.body.score;
+        break;
+      }
+    }
+
+    var Users = global.dbHandle.getModel('user');
+    Users.findOneAndUpdate({username: req.session.username} , {
+      assignments: req.session.user.assignments,
+      judgeStudents: req.session.user.judgeStudents
+    } , function(err , doc) {
+      if (err) {
+        console.log(err);
+        res.json({
+          status: false,
+          why: "Update Teacher Database Failed!",
+        });
+      } else {
+        console.log("Updata Teacher Database Success!");
+        res.json({
+          status: true,
+          why: "Update Teacher Databses Successfully!"
+        });
+      }
+    });
+
+
+    /**
+     * Step 2: Modify Student's ScoreList Records
+     */
+    Users.findOne({username: (newIndex + '')} , function(err , doc) {
+      if (err) {
+        console.log(err);
+      } else {
+        console.log(doc.username);
+        var x = doc.assignments;
+        var newTimeStamp = (new Date()).getTime();
+        x[req.params.id].taComment[0].title = req.body.title;
+        x[req.params.id].taComment[0].body = req.body.body;
+        x[req.params.id].taComment[0].score = req.body.score;
+        x[req.params.id].taComment[0].timeStamp = newTimeStamp;
+        console.log(x[req.params.id].taComment);
+        Users.findOneAndUpdate({username: doc.username} , {assignments: x} , function(err , doc) {
+          if (err) {
+            console.log(err);
+          } else {
+            console.log("Update Student's Database Success!");
+           /**
+            * Step 3: Modify TA's ScoreList Record
+            */
+            var myTAindex = doc.taindex;
+            var myName = doc.username;
+            console.log(myTAindex);
+            console.log(myName);
+            Users.findOne({username: doc.correspondTA} , function(err , doc) {
+              if (err) {
+                console.log(err);
+              } else {
+                var xx = doc.judgeStudents;
+                // var yy = doc.sendComments;
+                var zz = doc.assignments;
+                xx[myTAindex].source[req.params.id].tascore = req.body.score;
+                for (var i = 0 ; i < zz[req.params.id].sendComment.length ; i++) {
+                  if (zz[req.params.id].sendComment[i].receiverId == myName) {
+                    zz[req.params.id].sendComment[i].score = req.body.score;
+                    zz[req.params.id].sendComment[i].title = req.body.title;
+                    zz[req.params.id].sendComment[i].body = req.body.body;
+                    zz[req.params.id].sendComment[i].timeStamp = newTimeStamp;
+                    break;
+                  }
+                }
+                for (var ii = 0 ; ii < zz[req.params.id].scorelist.length ; ii++) {
+                  if (zz[req.params.id].scorelist[ii].username == myName) {
+                    zz[req.params.id].scorelist[ii].score = req.body.score;
+                    break;
+                  }
+                };
+                console.log(xx);
+                console.log(zz);
+                Users.findOneAndUpdate({username: doc.username} , {
+                  judgeStudents: xx,
+                  assignments: zz
+                } , function(err , doc) {
+                  if (err) {
+                    console.log(err);
+                  } else {
+                    console.log("Update TA Success!");
+                  }
+                })
+              }
+            });
+          }
+        });
+      }
+    });
 };
 
 exports.assignments = function(req , res , next) {
@@ -714,7 +820,7 @@ exports.loginPost = function(req , res , next) {
                 console.log(req.session.user);
                 // res.send(200);
                 // console.log(doc.username);
-
+                console.log(req.session.user.assignments[0].taComment);
                 res.json({status: true , why:"Success" , user: doc.username , isTA: doc.isTA , isTeacher: doc.isTeacher});
             }
         }
@@ -786,7 +892,7 @@ exports.sortByTA = function(req , res , next) {
        * @param  {[type]} next) {               var assId [description]
        * @return {[type]}       [description]
        */
-      User.findOne({username: req.session.user.assignments[req.params.id].scorelist[index].username} , 
+      User.findOne({username: req.session.user.assignments[req.params.id].scorelist[index].username} ,
         function(err , doc) {
           if (err) {
             console.log('find Student Error');
@@ -932,7 +1038,7 @@ exports.postJudge = function(req , res , next) {
 
   /**
    * Codes to Sync Teacher's StudentList
-   * 
+   *
    */
   // var index = parseInt(req.session.user.judgeStudents[req.params.studentId].id) - 14331000;
 
@@ -995,6 +1101,7 @@ exports.sending = function(req , res , next) {
     } else {
         user = req.session.user;
         var comments = user.assignments[assid].sendComment;
+        console.log("send A result!");
         res.json({
             status: true,
             why: "Get Information Success!",
