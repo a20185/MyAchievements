@@ -8,7 +8,8 @@ div(ng-repeat='assignment in ass')
   //a(href='/submission/{{assignment.index}}') Submit Now!
   //br
 
-  a(ng-href='/submit/{{assignment.index}}') Upload Source
+  a(ng-show='available(assignment.index)', ng-href='/submit/{{assignment.index}}') Upload Source
+  p Final Score : {{getScore(assignment.index)}} , Rank: {{getRank(assignment.index)}} in TA , {{getPosition(assignment.index)}} in Class.
   br
 
   a(href='{{assignment.job.refer}}') Description

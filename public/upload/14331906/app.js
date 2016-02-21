@@ -5,9 +5,7 @@
 
 var express = require('express'),
   routes = require('./routes'),
-  api = require('./routes/api'),
-  fs = require('fs');
-
+  api = require('./routes/api');
 var path = require('path');
 var favicon = require('serve-favicon');
 var logger = require('morgan');
@@ -16,12 +14,10 @@ var bodyParser = require('body-parser');
 var multer = require('multer');
 var mongoose = require('mongoose');
 var session = require('express-session');
-global.dbHandle = require('./database/dbHandle');
-global.db = mongoose.connect("mongodb://localhost:27017/db");
 
 var app = module.exports = express.createServer();
-
-// Configuration
+// app.use(bodyParser.urlencoded({ extended: true }));
+// app.use(multer());
 app.use(cookieParser());
 app.use(session({ 
     secret: 'secret',
@@ -29,6 +25,7 @@ app.use(session({
         maxAge: 1000*60*30
     }
 }));
+// Configuration
 
 app.configure(function(){
   app.set('views', __dirname + '/views');
@@ -36,7 +33,7 @@ app.configure(function(){
   app.set('view options', {
     layout: false
   });
-  app.use(express.bodyParser({uploadDir:'./uploads'}));
+  app.use(express.bodyParser());
   app.use(express.methodOverride());
   app.use(express.static(__dirname + '/public'));
   app.use(app.router);
@@ -64,39 +61,8 @@ app.configure('production', function(){
 // Routes
 
 app.get('/', routes.index);
-app.get('/partials/:name', routes.partials);
-
-// Make datas with database
-app.get('/initTask' , api.initTask);
-app.get('/makegroup' , api.initUsers);
-app.get('/inits' , api.initSys);
-// JSON API
-app.get('/onlineStatus' , api.online);
-
-app.get('/login', api.login);
-app.post('/api/login' , api.loginPost);
-app.get('/getJudgeStudents' , api.judge);
-app.get('/register',api.register);
-app.post('/api/register',api.registerPost);
-app.post('/logout' , api.logout);
-app.get('/api/posts', api.posts);
-app.get('/api/score/:id' , api.score);
-app.post('/upload' , api.upload);
-app.get('/api/post/:id', api.post);
-app.post('/api/post', api.addPost);
-app.post('/newAss' , api.newAss);
-app.get('/sortByTA/:id' , api.sortByTA);
-app.get('/sortByTeacher/:id' , api.sortByTeacher);
-app.post('/postJudge/:id/:studentId/:submitId' , api.postJudge);
-app.post('/api/send/:id/:commentId' , api.senders);
-app.get('/api/assignments' , api.assignments);
-app.get('/api/sendComment/:id' , api.sending);
-app.get('/api/recvComment/:id' , api.receiving);
-app.put('/api/post/:id', api.editPost);
-app.delete('/api/post/:id', api.deletePost);
-app.get('/getTACount/:id' , api.getta);
-app.get('/teachers' , api.teachers);
-// redirect all others to the index (HTML5 history)
+//  app.get('/partials/:name', routes.partials);
+app.post('/file/uploading' , routes.upload);
 app.get('*', routes.index);
 
 // Start server

@@ -1,5 +1,7 @@
 h1 Judge on Homework {{getIndex()}}.
-
+p You have already Judge {{count}} Students.
+p You can choose to 
+	button(ng-click='getSort()') Sort The Student By Score
 div(ng-repeat = 'student in data')
 	h3 Student {{student.id}}
 	div(ng-hide='getLength(student.index)') This Student haven't Post any Assignments Yet

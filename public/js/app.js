@@ -32,6 +32,10 @@ angular.module('myApp', ['myApp.filters', 'myApp.services', 'myApp.directives'])
           templateUrl: 'partials/commentAss',
           controller: JudgeCtrl
       }).
+      when('/teacherComment/:id' , {
+        templateUrl: 'partials/teacherComment',
+        controller: TeacherCommentCtrl
+      }).
       when('/taComment/:id' , {
           templateUrl: 'partials/taComment',
           controller: TaCommentCtrl

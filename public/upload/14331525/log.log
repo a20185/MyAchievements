@@ -1,0 +1,58 @@
+2016-02-21T09:32:11.301+0800 I CONTROL  [main] ***** SERVER RESTARTED *****
+2016-02-21T09:32:11.311+0800 I CONTROL  [initandlisten] MongoDB starting : pid=16432 port=27017 dbpath=../data/db 64-bit host=Souler
+2016-02-21T09:32:11.311+0800 I CONTROL  [initandlisten] db version v3.2.1
+2016-02-21T09:32:11.311+0800 I CONTROL  [initandlisten] git version: a14d55980c2cdc565d4704a7e3ad37e4e535c1b2
+2016-02-21T09:32:11.311+0800 I CONTROL  [initandlisten] OpenSSL version: OpenSSL 1.0.2d 9 Jul 2015
+2016-02-21T09:32:11.311+0800 I CONTROL  [initandlisten] allocator: tcmalloc
+2016-02-21T09:32:11.311+0800 I CONTROL  [initandlisten] modules: none
+2016-02-21T09:32:11.311+0800 I CONTROL  [initandlisten] build environment:
+2016-02-21T09:32:11.311+0800 I CONTROL  [initandlisten]     distmod: ubuntu1404
+2016-02-21T09:32:11.311+0800 I CONTROL  [initandlisten]     distarch: x86_64
+2016-02-21T09:32:11.311+0800 I CONTROL  [initandlisten]     target_arch: x86_64
+2016-02-21T09:32:11.311+0800 I CONTROL  [initandlisten] options: { net: { bindIp: "localhost" }, storage: { dbPath: "../data/db" }, systemLog: { destination: "file", logAppend: true, path: "../data/log/log.log" } }
+2016-02-21T09:32:11.359+0800 I STORAGE  [initandlisten] wiredtiger_open config: create,cache_size=1G,session_max=20000,eviction=(threads_max=4),config_base=false,statistics=(fast),log=(enabled=true,archive=true,path=journal,compressor=snappy),file_manager=(close_idle_time=100000),checkpoint=(wait=60,log_size=2GB),statistics_log=(wait=0),
+2016-02-21T09:32:12.009+0800 I CONTROL  [initandlisten] 
+2016-02-21T09:32:12.009+0800 I CONTROL  [initandlisten] ** WARNING: /sys/kernel/mm/transparent_hugepage/enabled is 'always'.
+2016-02-21T09:32:12.009+0800 I CONTROL  [initandlisten] **        We suggest setting it to 'never'
+2016-02-21T09:32:12.009+0800 I CONTROL  [initandlisten] 
+2016-02-21T09:32:12.009+0800 I CONTROL  [initandlisten] ** WARNING: /sys/kernel/mm/transparent_hugepage/defrag is 'always'.
+2016-02-21T09:32:12.009+0800 I CONTROL  [initandlisten] **        We suggest setting it to 'never'
+2016-02-21T09:32:12.009+0800 I CONTROL  [initandlisten] 
+2016-02-21T09:32:12.009+0800 I FTDC     [initandlisten] Initializing full-time diagnostic data capture with directory '../data/db/diagnostic.data'
+2016-02-21T09:32:12.009+0800 I NETWORK  [HostnameCanonicalizationWorker] Starting hostname canonicalization worker
+2016-02-21T09:32:12.039+0800 I NETWORK  [initandlisten] waiting for connections on port 27017
+2016-02-21T09:32:47.958+0800 I NETWORK  [initandlisten] connection accepted from 127.0.0.1:52706 #1 (1 connection now open)
+2016-02-21T09:32:47.958+0800 I NETWORK  [initandlisten] connection accepted from 127.0.0.1:52708 #2 (2 connections now open)
+2016-02-21T09:32:47.958+0800 I NETWORK  [initandlisten] connection accepted from 127.0.0.1:52710 #3 (3 connections now open)
+2016-02-21T09:32:47.958+0800 I NETWORK  [initandlisten] connection accepted from 127.0.0.1:52712 #4 (4 connections now open)
+2016-02-21T09:32:47.959+0800 I NETWORK  [initandlisten] connection accepted from 127.0.0.1:52714 #5 (5 connections now open)
+2016-02-21T09:34:28.964+0800 I NETWORK  [conn1] end connection 127.0.0.1:52706 (4 connections now open)
+2016-02-21T09:34:28.964+0800 I NETWORK  [conn5] end connection 127.0.0.1:52714 (4 connections now open)
+2016-02-21T09:34:28.964+0800 I NETWORK  [conn4] end connection 127.0.0.1:52712 (4 connections now open)
+2016-02-21T09:34:28.965+0800 I NETWORK  [conn3] end connection 127.0.0.1:52710 (2 connections now open)
+2016-02-21T09:34:28.964+0800 I NETWORK  [conn2] end connection 127.0.0.1:52708 (4 connections now open)
+2016-02-21T09:34:31.287+0800 I NETWORK  [initandlisten] connection accepted from 127.0.0.1:52730 #6 (1 connection now open)
+2016-02-21T09:34:31.287+0800 I NETWORK  [initandlisten] connection accepted from 127.0.0.1:52732 #7 (2 connections now open)
+2016-02-21T09:34:31.288+0800 I NETWORK  [initandlisten] connection accepted from 127.0.0.1:52734 #8 (3 connections now open)
+2016-02-21T09:34:31.288+0800 I NETWORK  [initandlisten] connection accepted from 127.0.0.1:52736 #9 (4 connections now open)
+2016-02-21T09:34:31.288+0800 I NETWORK  [initandlisten] connection accepted from 127.0.0.1:52738 #10 (5 connections now open)
+2016-02-21T09:44:15.406+0800 I NETWORK  [conn6] end connection 127.0.0.1:52730 (4 connections now open)
+2016-02-21T09:44:15.406+0800 I NETWORK  [conn7] end connection 127.0.0.1:52732 (3 connections now open)
+2016-02-21T09:44:15.406+0800 I NETWORK  [conn8] end connection 127.0.0.1:52734 (3 connections now open)
+2016-02-21T09:44:15.406+0800 I NETWORK  [conn9] end connection 127.0.0.1:52736 (3 connections now open)
+2016-02-21T09:44:15.406+0800 I NETWORK  [conn10] end connection 127.0.0.1:52738 (3 connections now open)
+2016-02-21T09:44:17.930+0800 I NETWORK  [initandlisten] connection accepted from 127.0.0.1:52774 #11 (1 connection now open)
+2016-02-21T09:44:17.930+0800 I NETWORK  [initandlisten] connection accepted from 127.0.0.1:52776 #12 (2 connections now open)
+2016-02-21T09:44:17.930+0800 I NETWORK  [initandlisten] connection accepted from 127.0.0.1:52778 #13 (3 connections now open)
+2016-02-21T09:44:17.930+0800 I NETWORK  [initandlisten] connection accepted from 127.0.0.1:52780 #14 (4 connections now open)
+2016-02-21T09:44:17.931+0800 I NETWORK  [initandlisten] connection accepted from 127.0.0.1:52782 #15 (5 connections now open)
+2016-02-21T09:45:32.010+0800 I NETWORK  [conn13] end connection 127.0.0.1:52778 (4 connections now open)
+2016-02-21T09:45:32.010+0800 I NETWORK  [conn14] end connection 127.0.0.1:52780 (4 connections now open)
+2016-02-21T09:45:32.010+0800 I NETWORK  [conn12] end connection 127.0.0.1:52776 (4 connections now open)
+2016-02-21T09:45:32.010+0800 I NETWORK  [conn11] end connection 127.0.0.1:52774 (4 connections now open)
+2016-02-21T09:45:32.011+0800 I NETWORK  [conn15] end connection 127.0.0.1:52782 (0 connections now open)
+2016-02-21T09:47:31.099+0800 I NETWORK  [initandlisten] connection accepted from 127.0.0.1:52798 #16 (1 connection now open)
+2016-02-21T09:47:31.099+0800 I NETWORK  [initandlisten] connection accepted from 127.0.0.1:52800 #17 (2 connections now open)
+2016-02-21T09:47:31.099+0800 I NETWORK  [initandlisten] connection accepted from 127.0.0.1:52802 #18 (3 connections now open)
+2016-02-21T09:47:31.099+0800 I NETWORK  [initandlisten] connection accepted from 127.0.0.1:52804 #19 (4 connections now open)
+2016-02-21T09:47:31.099+0800 I NETWORK  [initandlisten] connection accepted from 127.0.0.1:52806 #20 (5 connections now open)

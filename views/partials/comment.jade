@@ -34,7 +34,7 @@ div
             p {{comment.body}}
             p Evaluation: {{comment.score}} points.
             p(ng-show='haveGithub(comment)') Github Location : 
-                a(ng-href='{{comment.receiverGithub}}'){{comment.receiverGithub}}
+                a(ng-href='{{comment.receiverGithub}}') {{comment.receiverGithub}}
 
     div(ng-show='tata()')
         div(ng-show='haveTAComment()')

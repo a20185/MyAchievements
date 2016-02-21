@@ -133,15 +133,16 @@ function TaCommentCtrl($scope , $http , $location , $routeParams) {
       return $routeParams.id;
     };
     $scope.data = [];
+    $scope.count = 0;
+    $http.get('/getTACount/' + $routeParams.id).
+      success(function(data) {
+        if (data.count) $scope.count = data.count;
+      });
     $http.get('/getJudgeStudents').
       success(function(data) {
         $scope.data = data.judgeStudents;
       });
     $scope.getLength = function(index) {
-      // console.log("Cases:::");
-      // console.log($scope.data[index]);
-      // console.log(index);
-      // console.log(typeof(index));
       if (!$scope.data[index].source[$routeParams.id]) {
         return false;
       } else {
@@ -166,6 +167,15 @@ function TaCommentCtrl($scope , $http , $location , $routeParams) {
       }
     };
 
+    $scope.getSort = function() {
+      $http.get('/sortByTA/' + $routeParams.id).
+        success(function(data){
+          console.log('data.why');
+          if (data.status == true) {
+            $location.path('/');
+          }
+        });
+    };
 
     $scope.getGithub = function(index) {
       if ($scope.haveGithub(index)) {
@@ -315,6 +325,38 @@ function AssCtrl($scope , $http , $location) {
       return true;
     }
   };
+  $scope.available = function(index) {
+    if ($scope.getStatus(index) == "Running") {
+      return true;
+    } else {
+      return false;
+    }
+  };
+
+  $scope.getPosition = function(index) {
+    if ($scope.ass[index].position != '-1') {
+      return $scope.ass[index].position;
+    } else {
+      return 'No Rank';
+    }
+  };
+
+  $scope.getScore = function(index) {
+    if ($scope.ass[index].taComment.length > 0) {
+      return $scope.ass[index].taComment[0].score;
+    } else {
+      return "No Score";
+    }
+  };
+
+  $scope.getRank = function(index) {
+    if ($scope.ass[index].rank != '-1') {
+      return $scope.ass[index].rank;
+    } else {
+      return 'No Rank';
+    }
+  };
+
   $scope.getSource = function(id) {
     if(!$scope.haveSource(id)) {
       return "#";
@@ -539,4 +581,63 @@ function RegisterCtrl($scope , $http , $location , $routeParams , $window) {
         $window.alert(data.why);
       });
   };
+}
+
+function TeacherCommentCtrl($scope , $http , $location , $routeParams) {
+  $scope.count = 0;
+  $scope.data = [];
+  $http.get('/teachers').
+    success(function(data) {
+      $scope.data = data.judgeStudents;
+    });
+
+  $scope.sortStudents = function() {
+    $http.get('/sortByTeacher/' + $routeParams.id).
+      success(function(data) {
+        if (data.status == true) $location.path('/');
+      });
+  };
+
+  $scope.taJudged = function(index) {
+    if(!$scope.data[index].source || !$scope.data[index].source[$routeParams.id]) {
+      return false;
+    } else if (!$scope.data[index].source[$routeParams.id].tajudged) {
+      return false;
+    } else {
+      return true;
+    }
+  };
+
+  $scope.getScore = function(index) {
+    if (!$scope.data[index].source[$routeParams.id].tascore) {
+      return 0;
+    } else {
+      return $scope.data[index].source[$routeParams.id].tascore;
+    }
+  };
+
+  $scope.getSource = function(index) {
+    if (!$scope.data[index].source[$routeParams.id] || $scope.data[index].source[$routeParams.id].length == 0) {
+      return '/';
+    } else {
+      return $scope.data[index].source[$routeParams.id].submissions[$scope.data[index].source[$routeParams.id].submissions.length - 1];
+    }
+  };
+
+  $scope.haveGithub = function(index) {
+    if (!$scope.data[index].source[$routeParams.id].github || $scope.data[index].source[$routeParams.id].github == '#') {
+      return false;
+    } else {
+      return true;
+    }
+  };
+
+  $scope.getGithub = function(index) {
+    if (!$scope.haveGithub(index)) {
+      return '/';
+    } else {
+      return $scope.data[index].source[$routeParams.id].github;
+    }
+  };
+
 }

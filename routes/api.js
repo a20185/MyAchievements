@@ -192,6 +192,7 @@ exports.initTask = function(req , res , next) {
             "position": "-1",
             "timeStamp": date,
             "finished": endDate,
+            "scorelist": [],
             "ended": false,
             "source": [],
             "github": "#"
@@ -306,7 +307,7 @@ exports.initUsers = function(req , res , next) {
         "isAdmin": false,
         "taindex": 0,
         "judgeGroup": [-1],
-        "judgeStudents": [-1],
+        "judgeStudents": [],
         "correspondTA": "-1",
         "stuGroup": -1,
         "stuScore": [-1],
@@ -316,7 +317,32 @@ exports.initUsers = function(req , res , next) {
     })('11111111');
 };
 
+exports.getta = function(req , res , next) {
+  if (req.session.user) {
+    res.json({
+      status: true,
+      why: "Get TA Count Successfully!",
+      count: req.session.user.assignments[req.params.id].scorelist.length
+    });
+  } else {
+    res.json({
+      status: false,
+      why: "Please Login First!"
+    });
+  }
+};
+
 exports.initSys = function(req , res , next) {
+    for (var i = 0 ; i < 1000 ; i++) {
+      (function(index) {
+        teacherMode.teachers[0].judgeStudents.push({
+            "index" : index,
+            "id" : stuMode.students[index].username,
+            "source": []
+        });
+      })(i);
+    }
+
     /**
      * [description] Shuffle Students and Groups for Grouping
      * @param  {[type]} ){return Math.random() > 0.5 ? -1 : 1;} [description]
@@ -380,11 +406,11 @@ exports.initSys = function(req , res , next) {
             "id" : stuMode.students[first * 20 + second].username,
             "source": []
           });
-          teacherMode.teachers[0].judgeStudents.push({
-            "index" : first * 20 + second,
-            "id" : stuMode.students[first * 20 + second].username,
-            "source": []
-          });
+          // teacherMode.teachers[0].judgeStudents.push({
+          //   "index" : first * 20 + second,
+          //   "id" : stuMode.students[first * 20 + second].username,
+          //   "source": []
+          // });
           stuMode.students[first * 20 + second].correspondTA = taMode.tas[first].username;
           stuMode.students[first * 20 + second].taindex = second;
         })(k , kk);
@@ -530,7 +556,8 @@ exports.newAss = function(req , res , next) {
       "finished": req.body.finished,
       "ended": false,
       "source": [],
-      "github": "#"
+      "github": "#",
+      "scorelist": []
     };
     /**
      * Update Teacher's Session
@@ -628,6 +655,7 @@ exports.assignments = function(req , res , next) {
       ended: ass.ended,
       source: ass.source,
       github: ass.github,
+      scorelist: ass.scorelist
     });
   });
     res.json({
@@ -726,6 +754,113 @@ exports.judge = function(req , res , next) {
     }
 };
 
+exports.sortByTA = function(req , res , next) {
+  /**
+   * Find Students' scoreList;
+   */
+  var User = global.dbHandle.getModel('user');
+  var scorelist = req.session.user.assignments[req.params.id].scorelist;
+  scorelist.sort(function(a , b) {return b.score - a.score});
+  console.log(scorelist);
+  /**
+   * Save Modify To TA
+   */
+  User.findOneAndUpdate({username: req.session.user.username} , {assignments: req.session.user.assignments} , function(err ,doc) {
+    if (err) {
+      console.log("Save To TA failed!");
+    } else {
+      console.log("Save To TA Successfully!");
+      res.json({
+        status: true,
+        why: "Update TA ranking Status Successfully!"
+      });
+    }
+  });
+
+  for (var i = 0 ; i < scorelist.length ; i++) {
+    (function(index) {
+      /**
+       * Update Each Student's Database
+       * @param  {[type]} req   [description]
+       * @param  {[type]} res   [description]
+       * @param  {[type]} next) {               var assId [description]
+       * @return {[type]}       [description]
+       */
+      User.findOne({username: req.session.user.assignments[req.params.id].scorelist[index].username} , 
+        function(err , doc) {
+          if (err) {
+            console.log('find Student Error');
+            console.log(err);
+          } else {
+            var x = doc.assignments;
+            x[req.params.id].rank = index + 1;
+            User.findOneAndUpdate({username: doc.username} , {assignments: x} , function(err , doc) {
+              if (err) {
+                console.log('Update Database Error');
+                console.log(err);
+              } else {
+                console.log('Update Student Rank Successfully!');
+              }
+            });
+          }
+        });
+    })(i);
+  }
+  // res.json({
+  //   status: true,
+  //   why: "Function Success!"
+  // });
+};
+
+exports.sortByTeacher = function(req , res , next) {
+  var scoreList = req.session.user.assignments[req.params.id].scorelist;
+  var Users = global.dbHandle.getModel('user');
+  scoreList.sort(function(a , b) {return b.score - a.score});
+  req.session.user.assignments[req.params.id].scorelist = scoreList;
+  /**
+   * Save Teacher Updation
+   */
+  Users.findOneAndUpdate({username: req.session.user.username} , {assignments: req.session.user.assignments} , function(err , doc) {
+    if (err) {
+      console.log("Update Teacher Error");
+    } else {
+      console.log("Update Teacher Successfully!");
+      res.json({
+        status: true,
+        why: "Update Teacher Successfully!"
+      });
+    }
+  });
+
+  console.log(scoreList);
+  for (var i = 0 ; i < scoreList.length ; i++) {
+    (function(index) {
+      /**
+       * Update Each Student's Profile
+       * @param  {[type]} req   [description]
+       * @param  {[type]} res   [description]
+       * @param  {[type]} next) {               var assId [description]
+       * @return {[type]}       [description]
+       */
+      Users.findOne({username: req.session.user.assignments[req.params.id].scorelist[index].username}, function(err , doc) {
+        if (err) {
+          console.log("Update Student Error!");
+        } else {
+          var x = doc.assignments;
+          x[req.params.id].position = index;
+          Users.findOneAndUpdate({username: doc.username} , {assignments: x} , function(err , doc) {
+            if (err) {
+              console.log("Update Student Failed!");
+            } else {
+              console.log("success!");
+            }
+          });
+        }
+      });
+    })(i);
+  }
+};
+
 exports.postJudge = function(req , res , next) {
   /**
    * Update Session User Data First
@@ -752,9 +887,57 @@ exports.postJudge = function(req , res , next) {
     "receiverGithub": req.session.user.judgeStudents[studentId].source[assId].github,
     "score": req.body.score
   };
-
   req.session.user.assignments[assId].sendComment.push(modifyJson);
   req.session.user.judgeStudents[studentId].source[assId].judged = true;
+  req.session.user.judgeStudents[studentId].source[assId].tajudged = true;
+  req.session.user.judgeStudents[studentId].source[assId].tascore = req.body.score;
+
+  req.session.user.assignments[assId].scorelist.push({
+    "username": req.session.user.judgeStudents[studentId].id,
+    "score": req.body.score,
+    "index": studentId
+  });
+
+  /**
+   * Code to Sync To the Teacher's Database
+   */
+  Users.findOne({username: '11111111'} , function(err , doc) {
+    if (err) {
+      console.log(err);
+    } else {
+      var sync = doc.assignments;
+      sync[req.params.id].scorelist.push({
+        "username": req.session.user.judgeStudents[req.params.studentId].id,
+        "score": req.body.score,
+        "index": sync[req.params.id].scorelist.length
+      });
+      var index = parseInt(req.session.user.judgeStudents[req.params.studentId].id) - 14331000;
+      var jj = doc.judgeStudents;
+      console.log("index == " + index);
+      jj[index].source = req.session.user.judgeStudents[req.params.studentId].source;
+      console.log(jj[index]);
+      console.log(jj[index].source[req.params.id]);
+      jj[index].source[req.params.id].tajudged = true;
+      jj[index].source[req.params.id].tascore = req.body.score;
+
+      Users.findOneAndUpdate({username: doc.username} , {assignments: sync , judgeStudents: jj} , function(err , doc) {
+        if (err) {
+          console.log(err);
+        } else {
+          console.log("Update teacher's ranking List Successfully!");
+        }
+      });
+    }
+  });
+
+  /**
+   * Codes to Sync Teacher's StudentList
+   * 
+   */
+  // var index = parseInt(req.session.user.judgeStudents[req.params.studentId].id) - 14331000;
+
+
+
   Users.findOneAndUpdate({username: req.session.user.username} , {assignments: req.session.user.assignments , judgeStudents: req.session.user.judgeStudents} , function(err , doc) {
     if (err) {
       console.log("Write Database of TA comment failed!");
@@ -837,6 +1020,21 @@ exports.receiving = function(req , res , next) {
         recvs: comments
       });
     }
+};
+
+exports.teachers = function(req , res , next) {
+  if (!req.session.user) {
+    res.json({
+      status: false,
+      why: "Please Login First!"
+    });
+  } else {
+    res.json({
+      status: true,
+      why: "Get Student List Success!",
+      judgeStudents: req.session.user.judgeStudents
+    });
+  }
 };
 
 exports.upload = function(req, res, next) {
