@@ -541,6 +541,24 @@ exports.initSys = function(req , res , next) {
 exports.newAss = function(req , res , next) {
     var Users = global.dbHandle.getModel('user');
     /**
+     * Security Check - Make sure he is teacher
+     * @param  {[type]} !req.session.user ||            req.session.user [description]
+     * @return {[type]}                   [description]
+     */
+    if (!req.session.user || req.session.user == null) {
+      res.json({
+        status: false,
+        why: "Please Login First!"
+      });
+      return;
+    } else if (req.session.user.isTeacher == false) {
+      res.json({
+        status: false,
+        why: "Only Teacher have access to Generate New Assignments"
+      });
+      return;
+    }
+    /**
      * Make Assignment Models
      */
     var newJob = {
@@ -647,6 +665,23 @@ exports.newAss = function(req , res , next) {
 
 exports.rejudge = function(req , res , next) {
     /**
+     * Security Check - Make sure he is teacher
+     */
+    if (!req.session.user || req.session.user == null) {
+      res.json({
+        status: false,
+        why: "Please Login First"
+      });
+      return;
+    } else if (req.session.user.isTeacher == false) {
+      res.json({
+        status: false,
+        why: "Only teacher can rejudge!"
+      });
+      return;
+    }
+
+    /**
      * Step 1 : Modify Teacher's Session Storage of TA-Score
      *         And Sync to his Database
      */
@@ -752,6 +787,14 @@ exports.rejudge = function(req , res , next) {
 
 exports.assignments = function(req , res , next) {
     var assignment = [];
+    if (!req.session.user || req.session.user == null) {
+      res.json({
+        assignments: assignment,
+        status: false,
+        why: "Please Login First!"
+      });
+      return;
+    }
     req.session.user.assignments.forEach(function (ass, i) {
     assignment.push({
       job : ass.job,
@@ -868,12 +911,27 @@ exports.judge = function(req , res , next) {
 
 exports.sortByTA = function(req , res , next) {
   /**
+   * Security Check- Make sure he is a TA
+   */
+  if (!req.session.user || req.session.user == null) {
+    res.json({
+      status: false,
+      why: "Please Login First"
+    });
+    return;
+  } else if (req.session.user.isTA = false) {
+    res.json({
+      status: false,
+      why: "Are You Logged in as TA?"
+    })
+  }
+  /**
    * Find Students' scoreList;
    */
   var User = global.dbHandle.getModel('user');
   var scorelist = req.session.user.assignments[req.params.id].scorelist;
   scorelist.sort(function(a , b) {return b.score - a.score});
-  console.log(scorelist);
+  // console.log(scorelist);
   /**
    * Save Modify To TA
    */
@@ -925,6 +983,24 @@ exports.sortByTA = function(req , res , next) {
 };
 
 exports.sortByTeacher = function(req , res , next) {
+  /**
+   * Security Check - Make Sure he is A teacher
+   */
+  if (!req.session.user || req.session.user == null) {
+    res.json({
+      status: false,
+      why: "Please Login First"
+    });
+    return;
+  } else if (req.session.user.isTeacher == false) {
+    res.json({
+      status: false,
+      why: "Please Login as Teacher!"
+    });
+    return;
+  }
+
+
   var scoreList = req.session.user.assignments[req.params.id].scorelist;
   var Users = global.dbHandle.getModel('user');
   scoreList.sort(function(a , b) {return b.score - a.score});
@@ -974,6 +1050,24 @@ exports.sortByTeacher = function(req , res , next) {
 };
 
 exports.postJudge = function(req , res , next) {
+  /**
+   * Security Check - Make sure he is a TA
+   */
+  if (!req.session.user || req.session.user == null) {
+    res.json({
+      status: false,
+      why: "Please Login First"
+    });
+    return;
+  } else if (req.session.user.isTA == false) {
+    res.json({
+      status: false,
+      why: "Please Login as TA!"
+    });
+    return;
+  }
+
+
   /**
    * Update Session User Data First
    */
@@ -1151,10 +1245,28 @@ exports.teachers = function(req , res , next) {
 };
 
 exports.upload = function(req, res, next) {
+  /**
+   * Security Check: must is a Student
+   */
+  if (!req.session.user || req.session.user == null) {
+    res.json({
+      status: false,
+      why: "Please Login First"
+    });
+    return;
+  } else if (req.session.user.isTeacher == true || req.session.user.isTA == true) {
+    res.json({
+      status: false,
+      why: "Please Login as Student!"
+    });
+    return;
+  }
+
   // console.log(req.body);
   // console.log(req.files);
   // 获得文件的临时路径
     // var id = req.params.id;
+    
     console.log(req.body.id);
     var Users = global.dbHandle.getModel('user');
     var Groups = global.dbHandle.getModel('group');
@@ -1364,6 +1476,23 @@ exports.logout = function(req , res , next) {
 
 exports.senders = function(req , res , next) {
   /**
+   * Security Check: Must is a Student!
+   */
+  if (!req.session.user || req.session.user == null) {
+    res.json({
+      status: false,
+      why: "Please Login First"
+    });
+    return;
+  } else if (req.session.user.isTeacher == true || req.session.user.isTA == true) {
+    res.json({
+      status: false,
+      why: "Please Login as Student!"
+    });
+    return;
+  }
+
+  /**
    * Firstly : Modify a persons' own profile
    *  ** In Session **
    */
@@ -1438,6 +1567,24 @@ exports.senders = function(req , res , next) {
 }
 
 exports.score = function(req , res , next) {
+  /**
+   * Security Check Make Sure he is Srudent
+   * 
+   */
+  if (!req.session.user || req.session.user == null) {
+    res.json({
+      status: false,
+      why: "Please Login First"
+    });
+    return;
+  } else if (req.session.user.isTeacher == true ||  req.session.user.isTA == true) {
+    res.json({
+      status: false,
+      why: "Please Login as Student!"
+    });
+    return;
+  }
+
   var assid = req.params.id;
   var myData = req.session.user.assignments[assid].taComment;
   res.json({

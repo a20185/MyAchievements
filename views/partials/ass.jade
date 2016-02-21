@@ -1,5 +1,5 @@
 p There are {{ass.length}} assignments
-p Currently {{ass.availableNum}} Available , {{ass.judging}} are Judging , {{ass.completed}} are finished.
+p Currently {{getAvailable()}} Available , {{getJudging()}} are Judging , {{getCompleted()}} are finished , and {{getComing()}} are coming.
 br
 
 div(ng-repeat='assignment in ass')
@@ -7,7 +7,7 @@ div(ng-repeat='assignment in ass')
 
   //a(href='/submission/{{assignment.index}}') Submit Now!
   //br
-
+  p {{getTimeMessage(assignment.index)}}
   a(ng-show='available(assignment.index)', ng-href='/submit/{{assignment.index}}') Upload Source
   p Final Score : {{getScore(assignment.index)}} , Rank: {{getRank(assignment.index)}} in TA , {{getPosition(assignment.index)}} in Class.
   br

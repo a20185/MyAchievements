@@ -6,11 +6,11 @@ div
     a(ng-href='/newAss') Post A new Assignment
 
 div(ng-repeat='assignment in ass')
-  h3 Homework {{assignment.job.index + 1}} : {{assignment.job.title}} , status: {{getStatus(assignment.index)}}.
+  h3 Homework {{assignment.job.index + 1}} : {{assignment.job.title}} , [status: {{getStatus(assignment.index)}}].
 
   //a(href='/submission/{{assignment.index}}') Submit Now!
   //br
-
+  p {{getTimeMessage(assignment.index)}}
   a(ng-href='/teacherComment/{{assignment.index}}') Judge Students' Submissions
   br
 

@@ -10,7 +10,7 @@ block body
         p(href='/login' , ng-hide='showAuth()') Guest
         p(ng-show='showAuth()') {{currentUser}}
       li
-        a(ng-href='/' , ng-show='showAuth()') {{identity}}
+        a(ng-href='/' , ng-show='showAuth()') {{getIdentity()}}
         a(ng-href='/login' , ng-hide='showAuth()') Login
       li
         a(href='/register' , ng-hide='showAuth()') Init

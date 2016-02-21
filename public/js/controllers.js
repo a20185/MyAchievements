@@ -7,37 +7,77 @@ var currentUser = 'null';
 
 /* Controllers */
 
-function mainCtrl($scope , $http) {
+function mainCtrl($scope , $http , $window) {
   $scope.currentUser = "Guest";
   $scope.identity = "";
-  if (isTA == true) {
-    $scope.identity = "TA";
-  } else if (isTeacher == true) {
-    $scope.identity = "Teacher";
-  } else {
-    $scope.identity = "Student";
-  }
-
+  // if (isTA == true) {
+  //   $scope.identity = "TA";
+  // } else if (isTeacher == true) {
+  //   $scope.identity = "Teacher";
+  // } else {
+  //   $scope.identity = "Student";
+  // }
+  // if ($window.localStorage) {
+    // $window.alert("OKOK");
+  // }
   $http.get('/onlineStatus').
     success(function(data) {
       if (status == true) {
+        // $window.localStorage.isLogin = true;
         isLogin = true;
+        // $window.localStorage.currentUser = data.username;
         currentUser = data.username;
+        // $window.localStorage.isTA = data.isTA;
         isTA = data.isTA;
+        // $window.localStorage.isTeacher = data.isTeacher;
         isTeacher = data.isTeacher;
+        // if (isTA == true) {
+        //   $scope.identity = "TA";
+        // } else if (isTeacher == true) {
+        //   $scope.identity = "Teacher";
+        // } else {
+        //   $scope.identity = "Student";
+        // }
       } else {
+        // $window.localStorage.isLogin = false;
         isLogin = false;
+
+        // $window.localStorage.isRegister = false;
         isRegister = false;
+
+        // $window.localStorage.isTA = false;
         isTA = false;
+
+        // $window.localStorage.isTeacher = false;
         isTeacher = false;
+
+        // $window.localStorage.currentUser = 'null';
         currentUser = 'null';
       }
     });
+  $scope.getIdentity = function() {
+    if (isTA == true) {
+      return "TA";
+    } else if (isTeacher == true) {
+      return "Teacher";
+    } else {
+      return "Student";
+    }
+  };
+
+  // $scope.getCurrentUser = function() {
+  //   if ($window.localStorage.currentUser == 'null' || $window.localStorage.currentUser == 'Guest') {
+  //     return "Guest";
+  //     $window.alert($window.localStorage.currentUser);
+  //   } else {
+  //     return $window.localStorage.currentUser;
+  //   }
+  // }
   $scope.showAuth = function() {
     if (currentUser != 'null') {
       $scope.currentUser = currentUser;
     }
-    if (isLogin || isRegister) {
+    if (isLogin == true || isRegister == true) {
       return true;
     } else {
       return false;
@@ -57,6 +97,28 @@ function TaCtrl($scope , $http , $location) {
       $scope.ass = data.assignments;
       console.log('/** Successfully get Assignment Datas **/');
     });
+  $scope.getStatus = function(index) {
+    var date = new Date();
+    var str = date.getTime();
+    if (str < parseInt($scope.ass[index].timeStamp)) {
+      return "Coming";
+    } else if (str <= parseInt($scope.ass[index].finished)) {
+      return "Running";
+    } else {
+      return "Finished";
+    }
+  };
+  $scope.getTimeMessage = function(index) {
+    var starts = new Date($scope.ass[index].timeStamp);
+    var ends = new Date($scope.ass[index].finished);
+    if ($scope.getStatus(index) == "Coming") {
+      var str = "Starts at:" + starts.toDateString() + " " + starts.toTimeString();
+      return str;
+    } else {
+      var str = "Ends at:" + ends.toDateString() + " " + ends.toTimeString();
+      return str;
+    }
+  };
 }
 
 function TeacherCtrl($scope , $http , $location) {
@@ -76,19 +138,24 @@ function TeacherCtrl($scope , $http , $location) {
       var date = (new Date()).getTime();
       var timeStamp = parseInt($scope.ass[index].timeStamp);
       var finished = parseInt($scope.ass[index].finished);
-      console.log("Date is: ");
-      console.log(date);
-      console.log("Start is :");
-      console.log(timeStamp);
-      console.log("End is :");
-      console.log(finished);
-      console.log($scope.ass[index]);
       if (date < timeStamp) {
         return "Coming";
       } else if (date <= finished) {
         return "Running";
       } else {
         return "Finished!";
+      }
+    };
+
+    $scope.getTimeMessage = function(index) {
+      var starts = new Date($scope.ass[index].timeStamp);
+      var ends = new Date($scope.ass[index].finished);
+      if ($scope.getStatus(index) == "Coming") {
+        var str = "Starts at: " + starts.toDateString() + " " + starts.toTimeString();
+        return str;
+      } else {
+        var str = "Ends at: " + ends.toDateString() + " " + ends.toTimeString();
+        return str;
       }
     };
   /**
@@ -169,22 +236,35 @@ function PostAssCtrl($scope , $http , $location) {
     };
 }
 
-function IndexCtrl($scope, $http , $location) {
+function IndexCtrl($scope, $http , $location , $window) {
   $http.get('/onlineStatus').
       success(function(data) {
         if (data.status == true) {
+          // $window.localStorage.isLogin = true;
           isLogin = true;
+          // $window.localStorage.currentUser = data.username;
           currentUser = data.username;
           if (data.isTeacher == true) {
             $location.path('/teacherIndex');
+            // $window.localStorage.isTeacher = true;
+            // $window.localStorage.isTA = false;
             isTeacher = true;
+            isTA = false;
           } else if (data.isTA == true) {
             $location.path('/taindex');
+            // $window.localStorage.isTA = true;
+            // $window.localStorage.isTeacher = false;
             isTA = true;
+            isTeacher = false;
           } else {
             $location.path('/assignments');
           }
         } else {
+          // $window.localStorage.isLogin = false;
+          // $window.localStorage.isRegister = false;
+          // $window.localStorage.isTA = false;
+          // $window.localStorage.isTeacher = false;
+          // $window.localStorage.currentUser = 'null';
           isLogin = false;
           isRegister = false;
           isTA = false;
@@ -210,10 +290,10 @@ function TaCommentCtrl($scope , $http , $location , $routeParams) {
     $scope.comment = false;
 
     $scope.sender = function() {
-      console.log("LALALA");
+      // console.log("LALALA");
       $http.get('/api/sendComment/' + $routeParams.id).
         success(function(data) {
-          console.log("NONONO");
+          // console.log("NONONO");
           $scope.sends = data.sends;
           $scope.comment = true;
         });
@@ -322,9 +402,9 @@ function TaCommentCtrl($scope , $http , $location , $routeParams) {
       return x;
     };
 
-    $scope.getSendComment = function(index) {
+    // $scope.getSendComment = function(index) {
 
-    }
+    // }
 }
 
 function JudgeCtrl($scope , $http , $location , $routeParams) {
@@ -488,11 +568,27 @@ function LoginCtrl($scope, $http, $location , $window) {
 
 
 // Read Assignment Data
-function AssCtrl($scope , $http , $location) {
+function AssCtrl($scope , $http , $location , $window) {
   $scope.ass = [];
+  $scope.availableNum = 0;
+  $scope.judging = 0;
+  $scope.completed = 0;
+  $scope.coming = 0;
   $http.get('/api/assignments').
     success(function(data, status , headers , config) {
       $scope.ass = data.assignments;
+      for (var i = 0 ; i < $scope.ass.length ; i++) {
+        if ($scope.getStatus(i) == "Running") {
+          $scope.availableNum++;
+          if ($scope.ass[i].source.length != 0) {
+            $scope.judging++;
+          }
+        } else if ($scope.getStatus(i) == "Coming") {
+          $scope.coming++;
+        } else {
+          $scope.completed++;
+        }
+      }
       console.log('/** Successfully get Assignment Datas **/');
     });
   $scope.haveSource = function(id) {
@@ -502,6 +598,22 @@ function AssCtrl($scope , $http , $location) {
       return true;
     }
   };
+  $scope.getAvailable = function() {
+    return $scope.availableNum;
+  };
+
+  $scope.getJudging = function() {
+    return $scope.judging;
+  };
+
+  $scope.getCompleted = function() {
+    return $scope.completed;
+  };
+
+  $scope.getComing = function() {
+    return $scope.coming;
+  }
+
   $scope.available = function(index) {
     if ($scope.getStatus(index) == "Running") {
       return true;
@@ -544,7 +656,7 @@ function AssCtrl($scope , $http , $location) {
   var date = (new Date()).getTime();
   $scope.getStatus = function(index) {
     if (date < parseInt($scope.ass[index].timeStamp)) {
-      return "Coming.";
+      return "Coming";
     } else if (date <= parseInt($scope.ass[index].finished)) {
       return "Running";
     } else {
@@ -562,7 +674,19 @@ function AssCtrl($scope , $http , $location) {
     } else {
       return true;
     }
-  }
+  };
+
+  $scope.getTimeMessage = function(index) {
+    var starts = new Date($scope.ass[index].timeStamp);
+    var ends = new Date($scope.ass[index].finished);
+    if ($scope.getStatus(index) == "Coming") {
+      var str = "Starts at: " + starts.toDateString() + " " + starts.toTimeString();
+      return str;
+    } else {
+      var str = "Ends at: " + ends.toDateString() + " " + ends.toTimeString();
+      return str;
+    }
+  };
 
 }
 
@@ -708,10 +832,16 @@ function DeletePostCtrl($scope, $http, $location, $routeParams) {
   };
 }
 
-function LogoutCtrl($scope , $http , $location) {
+function LogoutCtrl($scope , $http , $location , $window) {
+  // $window.alert($window.localStorage.currentUser);
   $scope.logout = function() {
     $http.post('/logout' , {logout: "yes"}).
       success(function(data) {
+        // $window.localStorage.currentUser = 'null';
+        // $window.localStorage.isTA = false;
+        // $window.localStorage.isTeacher = false;
+        // $window.localStorage.isLogin = false;
+        // $window.localStorage.isRegister = false;
         $location.url('/');
       });
   };

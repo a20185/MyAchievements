@@ -4,11 +4,11 @@ p Currently {{ass.availableNum}} Available , {{ass.judging}} are Judging , {{ass
 br
 
 div(ng-repeat='assignment in ass')
-  h3 Homework {{assignment.job.index + 1}} : {{assignment.job.title}}
+  h3 Homework {{assignment.job.index + 1}} : {{assignment.job.title}}.  [Status: {{getStatus(assignment.index)}}].
 
   //a(href='/submission/{{assignment.index}}') Submit Now!
   //br
-
+  p {{getTimeMessage(assignment.index)}}
   a(ng-href='/taComment/{{assignment.index}}') Judge Students' Submissions
   br
 
