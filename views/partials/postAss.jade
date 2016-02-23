@@ -43,7 +43,7 @@ form.form-editpost(align='center')
 	input(ng-model='start.minute' , placeholder = '请输入分　，　当前为{{starts.minute}}').form-control
 	input(ng-model='start.second' , placeholder = '请输入秒　，　当前为{{starts.second}}').form-control
 	br
-	input(ng-model='duration' , placeholder='请输入持续时间　，　建议为　5').form-control
+	input(ng-model='duration' , placeholder='请输入持续时间(天)　，　建议为　5(天)').form-control
 	br
 	div
 		button(ng-hide='canClick()').btn.btn-lg.btn-danger.btn-block {{getMsg()}}

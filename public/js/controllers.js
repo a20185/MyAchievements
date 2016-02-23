@@ -360,8 +360,27 @@ function TaCommentCtrl($scope , $http , $location , $routeParams) {
     };
     $scope.data = [];
     $scope.sends = [];
+    $scope.ass = [];
     $scope.count = 0;
     $scope.comment = false;
+    $scope.getStatus = function(index) {
+      var date = new Date();
+      var str = date.getTime();
+      if (str < parseInt($scope.ass[index].timeStamp)) {
+        return "未开始";
+      } else if (str <= parseInt($scope.ass[index].finished)) {
+        return "进行中";
+      } else {
+        return "已结束";
+      }
+    };
+    $http.get('/api/assignments').
+    success(function(data, status , headers , config) {
+      $scope.ass = data.assignments;
+      if ($scope.getStatus($routeParams.id) != "已结束") {
+        $location.path('/');
+      }
+    });
 
     $scope.sender = function() {
       // console.log("LALALA");
@@ -822,10 +841,27 @@ function AssCtrl($scope , $http , $location , $window) {
 function UploadCtrl($scope , $http , $location , $routeParams) {
   // $scope.getSync = function() {
     $scope.id = $routeParams.id;
+    $scope.ass = [];
     $scope.home = function() {
       $location.path('/');
     };
-  // }
+    $scope.getStatus = function(index) {
+      var date = (new Date()).getTime();
+      if (date < parseInt($scope.ass[index].timeStamp)) {
+        return "未开始";
+      } else if (date <= parseInt($scope.ass[index].finished)) {
+        return "进行中";
+      } else {
+        return "已完成";
+      }
+    };
+    $http.get('/api/assignments').
+    success(function(data) {
+      $scope.ass = data.assignments;
+      if ($scope.getStatus($routeParams.id) != "进行中") {
+        $location.path('/');
+      }
+    });
 }
 
 

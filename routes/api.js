@@ -1053,7 +1053,9 @@ exports.sortByTeacher = function(req , res , next) {
 exports.postJudge = function(req , res , next) {
   /**
    * Security Check - Make sure he is a TA
+   * And Make sure for Valid Posts
    */
+  var date = (new Date()).getTime();
   if (!req.session.user || req.session.user == null) {
     res.json({
       status: false,
@@ -1064,6 +1066,12 @@ exports.postJudge = function(req , res , next) {
     res.json({
       status: false,
       why: "Please Login as TA!"
+    });
+    return;
+  } else if (parseInt(req.session.user.assignments[req.params.id].finished) >= date) {
+    res.json({
+      status: false,
+      why: "Assignment Cannot Be Judge Yet!!"
     });
     return;
   }
@@ -1276,6 +1284,17 @@ exports.upload = function(req, res, next) {
       why: "Please Login as Student!"
     });
     return;
+  } else {
+    var date = (new Date()).getTime();
+    var startDate = req.session.user.assignments[req.body.id].timeStamp;
+    var endDate = req.session.user.assignments[req.body.id].finished;
+    if (date < parseInt(startDate) || date > parseInt(endDate)) {
+      res.json({
+        status: false,
+        why: "It's not time for submission!"
+      });
+      return;
+    }
   }
 
   // console.log(req.body);
