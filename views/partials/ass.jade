@@ -1,23 +1,48 @@
-p There are {{ass.length}} assignments
-p Currently {{getAvailable()}} Available , {{getJudging()}} are Judging , {{getCompleted()}} are finished , and {{getComing()}} are coming.
+p.lead 一共有 {{ass.length}} 个作业
+p.lead 其中　{{getAvailable()}} 个正在进行 , {{getJudging()}} 个正被评审 , {{getCompleted()}} 个已经结束 , {{getComing()}} 个将要开始.
+
+h1 搜索作业题目 : &nbsp;
+  input(ng-model='keyWord' , type='text' , autofocus="")
 br
 
-div(ng-repeat='assignment in ass')
-  h3 Homework {{assignment.job.index + 1}} : {{assignment.job.title}}. [Status: {{getStatus(assignment.index)}}].
+div.container-fluid
+  div.row
+    div.col-md-4(ng-repeat='assignment in ass | filter : searchFilter')
+      div.jumbotron
+        h3(align='left') 作业 {{assignment.job.index + 1}} : {{assignment.job.title}}.
+        p.lead(align='left') [状态: {{getStatus(assignment.index)}}].
 
-  //a(href='/submission/{{assignment.index}}') Submit Now!
-  //br
-  p {{getTimeMessage(assignment.index)}}
-  a(ng-show='available(assignment.index)', ng-href='/submit/{{assignment.index}}') Upload Source
-  p Final Score : {{getScore(assignment.index)}} , Rank: {{getRank(assignment.index)}} in TA , {{getPosition(assignment.index)}} in Class.
-  br
+        p {{getTimeMessage(assignment.index)}}
 
-  a(href='{{assignment.job.refer}}') Description
-  |  -
-  a(ng-href='/comment/{{assignment.index}}') Comment
-  |  - 
-  a(ng-href='{{getSource(assignment.index)}}' , ng-show='haveSource(assignment.index)') My Source
-  |  - 
-  a(ng-href='{{getGithub(assignment.index)}}' , ng-show='haveGithub(assignment.index)') Github
-//  |  - 
+        a(ng-show='available(assignment.index)', ng-href='/submit/{{assignment.index}}' , role='button').btn.btn-lg.btn-primary.btn-block 上传源码
+        a(ng-hide='available(assignment.index)', role='button').btn.btn-lg.btn-danger.btn-block 当前不能提交代码
+        br
+        p 最终分数 : {{getScore(assignment.index)}} , 排名: 组内{{getRank(assignment.index)}} , 班内{{getPosition(assignment.index)}}.
+        br
+
+        a(ng-href='{{assignment.job.refer}}', role='button').btn.btn-small.btn-info 详情
+        |  -
+        a(ng-href='/comment/{{assignment.index}}', role='button').btn.btn-small.btn-danger 评论
+        |  -
+        a(ng-href='{{getSource(assignment.index)}}' , ng-show='haveSource(assignment.index)', role='button').btn.btn-small.btn-success 源码
+        |  -
+        a(ng-href='{{getGithub(assignment.index)}}' , ng-show='haveGithub(assignment.index)', role='button').btn.btn-small.btn-warning Github
+//- div(ng-repeat='assignment in ass | filter : searchFilter')
+//-   h3 Homework {{assignment.job.index + 1}} : {{assignment.job.title}}. [Status: {{getStatus(assignment.index)}}].
+
+//-   //a(href='/submission/{{assignment.index}}') Submit Now!
+//-   //br
+//-   p {{getTimeMessage(assignment.index)}}
+//-   a(ng-show='available(assignment.index)', ng-href='/submit/{{assignment.index}}') Upload Source
+//-   p Final Score : {{getScore(assignment.index)}} , Rank: {{getRank(assignment.index)}} in TA , {{getPosition(assignment.index)}} in Class.
+//-   br
+
+//-   a(href='{{assignment.job.refer}}') Description
+//-   |  -
+//-   a(ng-href='/comment/{{assignment.index}}') Comment
+//-   |  -
+//-   a(ng-href='{{getSource(assignment.index)}}' , ng-show='haveSource(assignment.index)') My Source
+//-   |  -
+//-   a(ng-href='{{getGithub(assignment.index)}}' , ng-show='haveGithub(assignment.index)') Github
+//  |  -
 //  a(href='/deletePost/{{post.id}}') Delete

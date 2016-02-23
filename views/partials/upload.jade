@@ -1,9 +1,13 @@
-form(method="post",enctype="multipart/form-data",action = '/upload')
-  input(type = 'text' , name = 'id' , ng-model='id')
+form.form-signin(method="post",enctype="multipart/form-data",action = '/upload')
+  input(type = 'text' , name = 'id' , ng-model='id' , ng-show= 'false').form-control
   //- input(type = 'password', name = 'password')
   br
-  input(type = 'text' , name= 'github' , ng-model='github' , placeholder='github URL')
+  label.lead 提交作业
+  input(type = 'text' , name= 'github' , ng-model='github' , placeholder='Github地址(可选)').form-control
   br
-  input(type = 'file' , name = 'thumbnail')
+  input(type = 'file' , name = 'thumbnail' , align='center').form-control
   br
-  input(type = 'submit')
+  br
+  input(type = 'submit' , role='button').btn.btn-lg.btn-primary.btn-block
+div.myNewContainer
+  button(ng-click='home()' , role='button').btn.btn-lg.btn-danger.btn-block 返回作业列表

@@ -1,19 +1,25 @@
-h2 You have ReJudged {{count}} Students!
-p You can choose to 
-	button(ng-click='sortStudents()') Sort Students By their Scores
+h2 您已对 {{getCount()}} 名学生进行重新评分，辛苦了！
+p.lead 您可以 
+	button(ng-click='sortStudents()').btn.btn-lg.btn-success 对学生进行排名
 
+h1 搜索学生ID: 
+	input(ng-model='keyWord' , type='text' , autofocus='')
 br
-br
-div(ng-repeat = 'student in data')
-	p Student ID: {{student.id}}
-	div(ng-show='taJudged(student.index)')
-		p TA-Judge Score: {{getScore(student.index)}}
-		//- p TA-Judge Rank: {{getRank(student.index)}}
-		a(ng-href='{{getSource(student.index)}}') His Source
-		|  - 
-		a(ng-show='haveGithub(student.index)' , ng-href='{{getGithub(student.index)}}') Github Address
-		|  - 
-		a(ng-href='{{rejudge(student.index)}}') ReJudge Him!
-	div(ng-hide='taJudged(student.index)')
-		p Please Wait Because TA haven't Judge On this Student Yet!
-	br
+div.container-fluid
+	div.row
+		div.col-md-4(ng-repeat = 'student in data | filter : searchFilter')
+			div.jumbotron
+				h3.lead(align='left') 学生编号: {{student.id}}
+				div(ng-show='taJudged(student.index)')
+					p.lead TA评判分数: {{getScore(student.index)}}
+					a(ng-href='{{rejudge(student.index)}}' , role='button').btn.btn-lg.btn-primary.btn-block 对他重新评判
+					br
+					//- p TA-Judge Rank: {{getRank(student.index)}}
+					a(ng-href='{{getSource(student.index)}}' , role='button').btn.btn-success 源代码
+					|  - 
+					a(ng-show='haveGithub(student.index)' , ng-href='{{getGithub(student.index)}}' , role='button').btn.btn-danger Github 
+					//- |  - 
+					//- a(ng-href='{{rejudge(student.index)}}') ReJudge Him!
+				div(ng-hide='taJudged(student.index)')
+					p.lead 请等待，因为TA还未给出初评分数
+				br

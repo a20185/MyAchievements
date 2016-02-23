@@ -20,9 +20,9 @@ div.container
   form.form-signin(align='center')
     h2.form-signin-heading(align='left') 欢迎回来
     label.sr-only(for="user") Username
-    input(type="text" , placeholder="输入用户名(8位)" , required="" ,  autofocus="" , ng-model='form.username')#user.form-control
+    input(type="text" , placeholder="输入用户名(6-8位)" , required="" ,  autofocus="" , ng-model='form.username')#user.form-control
     label.sr-only(for="pass") Password
-    input(type="password" , placeholder="输入密码(8位)"　, required="" , ng-model='form.passwd')#pass.form-control
+    input(type="password" , placeholder="输入密码(6-12位)"　, required="" , ng-model='form.passwd')#pass.form-control
     div.checkbox
       label
         input(type="checkbox" , value="记住我")
@@ -40,3 +40,9 @@ div.container
     span
       span.lead.okay(ng-show='validate.passwd') 密码格式正确
       span.lead.nopass(ng-hide='validate.passwd') {{passCheck()}}
+
+
+
+//- div#warn_container.warn_lines(ng-model='warning.main')
+//- div#warn_user.warn_line_noany(ng-model='warning.user')
+//- div#warn_pass.warn_line_noany(ng-model='warning.pass')

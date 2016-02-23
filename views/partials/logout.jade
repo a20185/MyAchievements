@@ -1,4 +1,10 @@
-p Do you Really want to Logout?
-br
-button(ng-click='logout()') Yes!
-button(ng-click='home()') No!
+div.container
+  form.form-signin(align='center')
+    h2.form-signin-heading(align='left') 确认退出系统
+    p.lead 你真的要退出系统吗？
+    br
+    br
+    button.btn.btn-lg.btn-primary.btn-block(type="button", ng-show='false') margins
+    button.btn.btn-lg.btn-info.btn-block(type="button" , ng-click='logout()') 我要退出
+    br
+    button.btn.btn-lg.btn-default.btn-block(type="button" , ng-click='home()') 还是算了

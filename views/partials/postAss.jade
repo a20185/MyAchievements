@@ -1,27 +1,51 @@
-h2 New Assignment
-p Title:
-	input(ng-model='form.title' , name='title')
-p Description(URL):
-	input(ng-model='form.description' , name=description)
-div
-	p Start Time
-		input(ng-model='start.year' , placeholder = '{{starts.year}}')
-		p 年
-		input(ng-model='start.month' , placeholder = '{{starts.month}}')
-		p 月
-		input(ng-model='start.day' , placeholder = '{{starts.day}}')
-		p 日
-		input(ng-model='start.hour' , placeholder = '{{starts.hour}}')
-		p 时
-		input(ng-model='start.minute' , placeholder = '{{starts.minute}}')
-		p 分
-		input(ng-model='start.second' , placeholder = '{{starts.second}}')
-		p 秒
-div
-	p Duration
-	input(ng-model='duration' , placeholder='5') 
-	p days.
+//- h2 New Assignment
+//- p Title:
+//- 	input(ng-model='form.title' , name='title')
+//- p Description(URL):
+//- 	input(ng-model='form.description' , name=description)
+//- div
+//- 	p Start Time
+//- 		input(ng-model='start.year' , placeholder = '{{starts.year}}')
+//- 		p 年
+//- 		input(ng-model='start.month' , placeholder = '{{starts.month}}')
+//- 		p 月
+//- 		input(ng-model='start.day' , placeholder = '{{starts.day}}')
+//- 		p 日
+//- 		input(ng-model='start.hour' , placeholder = '{{starts.hour}}')
+//- 		p 时
+//- 		input(ng-model='start.minute' , placeholder = '{{starts.minute}}')
+//- 		p 分
+//- 		input(ng-model='start.second' , placeholder = '{{starts.second}}')
+//- 		p 秒
+//- div
+//- 	p Duration
+//- 	input(ng-model='duration' , placeholder='5') 
+//- 	p days.
 
-p
-	p(ng-hide='canClick()') {{getMsg()}}
-	button(ng-click='postAssignment()' , ng-show='canClick()') Post Assignment!
+//- p
+//- 	p(ng-hide='canClick()') {{getMsg()}}
+//- 	button(ng-click='postAssignment()' , ng-show='canClick()') Post Assignment!
+
+form.form-editpost(align='center')
+	h2.form-editpost-heading(align='left') 发布新作业
+
+	input(ng-model='form.title' , name='title', type='text' , required="" ,  autofocus="" , placeholder='请输入作业标题').form-control
+	br
+
+	input(ng-model='form.description' , name='body' , placeholder='请输入作业内容(URL)', type='text').form-control
+	br
+	br
+	h2 开始时间：
+	input(ng-model='start.year' , placeholder = '请输入年　，　当前为{{starts.year}}').form-control
+	input(ng-model='start.month' , placeholder = '请输入月　，　当前为{{starts.month}}').form-control
+	input(ng-model='start.day' , placeholder = '请输入天　，　当前为{{starts.day}}').form-control
+	input(ng-model='start.hour' , placeholder = '请输入时　，　当前为{{starts.hour}}').form-control
+	input(ng-model='start.minute' , placeholder = '请输入分　，　当前为{{starts.minute}}').form-control
+	input(ng-model='start.second' , placeholder = '请输入秒　，　当前为{{starts.second}}').form-control
+	br
+	input(ng-model='duration' , placeholder='请输入持续时间　，　建议为　5').form-control
+	br
+	div
+		button(ng-hide='canClick()').btn.btn-lg.btn-danger.btn-block {{getMsg()}}
+		button(ng-click='postAssignment()' , ng-show='canClick()').btn.btn-lg.btn-success.btn-block Send!
+		button.btn.btn-lg.btn-default.btn-block(type="button" , ng-click='returnHome()') 返回

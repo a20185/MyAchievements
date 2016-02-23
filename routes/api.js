@@ -686,6 +686,7 @@ exports.rejudge = function(req , res , next) {
      *         And Sync to his Database
      */
     req.session.user.judgeStudents[req.params.studentId].source[req.params.id].tascore = req.body.score;
+    req.session.user.judgeStudents[req.params.studentId].source[req.params.id].rejudge = true;
     var newIndex = parseInt(req.params.studentId) + 14331000;
     for (var i = 0 ; i < 1000 ; i++) {
       if (req.session.user.assignments[req.params.id].scorelist[i].username == newIndex) {
@@ -695,7 +696,7 @@ exports.rejudge = function(req , res , next) {
     }
 
     var Users = global.dbHandle.getModel('user');
-    Users.findOneAndUpdate({username: req.session.username} , {
+    Users.findOneAndUpdate({username: req.session.user.username} , {
       assignments: req.session.user.assignments,
       judgeStudents: req.session.user.judgeStudents
     } , function(err , doc) {
@@ -891,7 +892,7 @@ exports.online = function(req , res , next) {
       why: "Not yet Logged In !"
     });
   }
-}
+};
 
 exports.judge = function(req , res , next) {
     if (req.session.user) {
@@ -919,7 +920,7 @@ exports.sortByTA = function(req , res , next) {
       why: "Please Login First"
     });
     return;
-  } else if (req.session.user.isTA = false) {
+  } else if (req.session.user.isTA == false) {
     res.json({
       status: false,
       why: "Are You Logged in as TA?"
@@ -1236,11 +1237,26 @@ exports.teachers = function(req , res , next) {
       why: "Please Login First!"
     });
   } else {
+    var count = 0;
+    var id = req.params.id;
+    for (var i = 0 ; i < 1000 ; i++) {
+      if (req.session.user.judgeStudents[i].source.length == 0) {
+        continue;
+      } else if (!req.session.user.judgeStudents[i].source[id]) {
+        continue;
+      } else if (req.session.user.judgeStudents[i].source[id].rejudge == true) {
+        count++;
+      } else {
+        continue;
+      }
+    }
     res.json({
       status: true,
       why: "Get Student List Success!",
-      judgeStudents: req.session.user.judgeStudents
+      judgeStudents: req.session.user.judgeStudents,
+      counters: count
     });
+    console.log(count);
   }
 };
 
@@ -1505,7 +1521,7 @@ exports.senders = function(req , res , next) {
   // console.log(typeof(date));
   // console.log(req.body);
   req.session.user.assignments[req.params.id].
-    sendComment[req.params.commentId].title = req.body.titie;
+    sendComment[req.params.commentId].title = req.body.title;
   req.session.user.assignments[req.params.id].
     sendComment[req.params.commentId].body = req.body.body;
   req.session.user.assignments[req.params.id].
@@ -1594,3 +1610,49 @@ exports.score = function(req , res , next) {
   });
 };
 
+exports.getValue = function(req , res , next) {
+  var id = req.params.id;
+  var commentId = req.params.commentId;
+  if (!req.session.user || req.session.user == null) {
+    res.json({
+      status: false,
+      why: "Failed!"
+    });
+    return;
+  } else if (req.session.user.isTA == true || req.session.user.isTeacher == true) {
+    res.json({
+      status: false,
+      why: "Failed!"
+    });
+    return;
+  }
+
+  res.json({
+    status: true,
+    why: "Successfully get all datas",
+    comment: req.session.user.assignments[id].sendComment[commentId]
+  });
+};
+
+
+exports.stuid = function(req , res , next) {
+  if (!req.session.user || req.session.user == null) {
+    res.json({
+      username: "null",
+      status: false,
+      why: "Please Login"
+    });
+    return;
+  } else if (!(req.session.user.isTA == true || req.session.user.isTeacher == true)) {
+    res.json({
+      status: false,
+      why: "Please Login as TA!"
+    });
+    return;
+  }
+  res.json({
+    username: req.session.user.judgeStudents[req.params.id].id,
+    status: true,
+    why: "Get Data Success!"
+  });
+};

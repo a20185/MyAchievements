@@ -2,21 +2,30 @@ extends layout
 
 block body
   div(ng-controller='mainCtrl')
-    h2 My Achievements
-    ul
-      li
-        a(href='/') Home
-      li
-        p(href='/login' , ng-hide='showAuth()') Guest
-        p(ng-show='showAuth()') {{currentUser}}
-      li
-        a(ng-href='/' , ng-show='showAuth()') {{getIdentity()}}
-        a(ng-href='/login' , ng-hide='showAuth()') Login
-      li
-        a(href='/register' , ng-hide='showAuth()') Init
-        a(href='/logout' , ng-show='showAuth()') Log Out!
+    nav.navbar.navbar-inverse.navbar-fixed-top
+      div.container
+        div.navbar-header
+          button.navbar-toggle.collapsed(type="button" , data-toggle="collapse" data-target="/" , aria-expanded="false" , aria-controls="navbar")
+            span.sr-only Toggle navigation
+            span.icon-bar
+            span.icon-bar
+            span.icon-bar
+          a.navbar-brand(href="/" , ng-click="hello()") My Achievement
+        div#navbar.collapse.navbar-collapse
+          ul.nav.navbar-nav
+            li.active
+              a(href='/') 主页
+            li
+              a(href='/' , ng-show='showAuth()') {{currentUser}}
+              a(href='/' , ng-hide='showAuth()') 还未登陆
+            li
+              a(href='/login' , ng-hide='showAuth()') 我要登陆
+              a(href='/' , ng-show='showAuth()') {{getIdentity()}}
+            li
+              a(href='/register' , ng-hide='showAuth()') 系统初始
+              a(href='/logout' , ng-show='showAuth()') 退出系统
 
-    div(ng-view)
+    div(ng-view).myContainer
 
   script(src='js/lib/angular/angular.js')
   script(src='js/app.js')

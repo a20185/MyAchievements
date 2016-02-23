@@ -1,19 +1,23 @@
-h1 Welcome , TA-{{currentUser}}
-p There are {{ass.length}} assignments to 
-p Currently {{ass.availableNum}} Available , {{ass.judging}} are Judging , {{ass.completed}} are finished.
+h2 欢迎回来，亲爱的助教 {{currentUser}}
+p.lead 一共有 {{ass.length}} 个作业 ,　{{getAvailable()}} 个正在进行 , {{getJudging()}} 个正被评审 , {{getCompleted()}} 个已经结束 , {{getComing()}} 个将要开始.
 br
 
-div(ng-repeat='assignment in ass')
-  h3 Homework {{assignment.job.index + 1}} : {{assignment.job.title}}.  [Status: {{getStatus(assignment.index)}}].
+h1 搜索作业题目 : 
+  input(ng-model='keyWord' , type='text' , autofocus='')
+br
+div.container-fluid
+  div.row
+    div.col-md-4(ng-repeat='assignment in ass | filter : searchFilter')
+      div.jumbotron
+        h3(align='left') 作业{{assignment.job.index + 1}} : {{assignment.job.title}}.
+        p.lead(align='left') [状态: {{getStatus(assignment.index)}}].
+        p {{getTimeMessage(assignment.index)}}
+        a(ng-href='/taComment/{{assignment.index}}', role='button' , ng-show='canJudge(assignment.index)').btn.btn-lg.btn-primary.btn-block 评审学生作业
+        a(role='button' , ng-hide='canJudge(assignment.index)').btn.btn-lg.btn-danger.btn-block 当前不能评审本作业
+        br
 
-  //a(href='/submission/{{assignment.index}}') Submit Now!
-  //br
-  p {{getTimeMessage(assignment.index)}}
-  a(ng-href='/taComment/{{assignment.index}}') Judge Students' Submissions
-  br
-
-  a(href='{{assignment.job.refer}}') Description
-  |  -
+        a(href='{{assignment.job.refer}}' , role='button').btn.btn-small.btn-success 作业描述
+        |  -
   //- a(ng-href='/comment/{{assignment.index}}') Comment
   //- |  - 
   //- a(ng-href='{{getSource(assignment.index)}}' , ng-show='haveSource(assignment.index)') My Source

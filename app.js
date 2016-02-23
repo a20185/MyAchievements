@@ -81,6 +81,7 @@ app.post('/api/register',api.registerPost);
 app.post('/logout' , api.logout);
 app.get('/api/posts', api.posts);
 app.get('/api/score/:id' , api.score);
+app.get('/api/getValue/:id/:commentId' , api.getValue);
 app.post('/upload' , api.upload);
 app.get('/api/post/:id', api.post);
 app.post('/api/post', api.addPost);
@@ -93,10 +94,11 @@ app.post('/api/send/:id/:commentId' , api.senders);
 app.get('/api/assignments' , api.assignments);
 app.get('/api/sendComment/:id' , api.sending);
 app.get('/api/recvComment/:id' , api.receiving);
+app.get('/getStuID/:id' , api.stuid);
 app.put('/api/post/:id', api.editPost);
 app.delete('/api/post/:id', api.deletePost);
 app.get('/getTACount/:id' , api.getta);
-app.get('/teachers' , api.teachers);
+app.get('/teachers/:id' , api.teachers);
 // redirect all others to the index (HTML5 history)
 app.get('*', routes.index);
 

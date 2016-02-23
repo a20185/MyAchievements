@@ -1,3 +1,6 @@
-button(ng-click='initTask()') Make Tasks!
-button(ng-click='initUsers()') Make Users and Groups!
-button(ng-click='initSys()') Init System!
+p.lead 系统初始化需要时间，完成后会自动跳转
+
+div(align='center').initContainer
+	button.btn.btn-primary.btn-block(type='button' , ng-click='initTask()') 初始化任务列表
+	button.btn.btn-info.btn-block(type='button' , ng-click='initUsers()') 初始化用户和组
+	button.btn.btn-danger.btn-block(type='button' , ng-click='initSys()') 系统初始化

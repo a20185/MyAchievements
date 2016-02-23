@@ -1,13 +1,16 @@
-h2 Send Comment to Your Collegue {{comment.receiver}}
-p Title:
-input(ng-model='form.title' , name='title')
-br
-p Body:
-input(ng-model='form.body' , name='body')
-br
-p Score
-input(ng-model='form.score' , name='score')
-br
-p
-	p(ng-hide='canClick()') {{getMsg()}}
-	button(ng-click='modify()' , ng-show='canClick()') Send!
+form.form-editpost(align='center')
+	h2.form-editpost-heading(align='left') 发送评论给 {{comment.receiverId}}
+
+	input(ng-model='form.title' , name='title', type='text' , required="" ,  autofocus="" , placeholder='请输入评论标题').form-control
+	br
+
+	textarea(ng-model='form.body' , name='body' , placeholder='请输入评论内容', type='text' , cols='50', rows='15').form-control
+	br
+
+	input(ng-model='form.score' , name='score', type='text' , placeholder='请输入分数').form-control
+	br
+
+	div
+		button(ng-hide='canClick()').btn.btn-lg.btn-danger.btn-block {{getMsg()}}
+		button(ng-click='modify()' , ng-show='canClick()').btn.btn-lg.btn-success.btn-block Send!
+		button.btn.btn-lg.btn-default.btn-block(type="button" , ng-click='returnHome()') 返回

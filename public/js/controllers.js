@@ -92,30 +92,87 @@ function mainCtrl($scope , $http , $window) {
 function TaCtrl($scope , $http , $location) {
   $scope.currentUser = currentUser;
   $scope.ass = [];
+  $scope.availableNum = 0;
+  $scope.judging = 0;
+  $scope.completed = 0;
+  $scope.coming = 0;
   $http.get('/api/assignments').
     success(function(data, status , headers , config) {
       $scope.ass = data.assignments;
+      for (var i = 0 ; i < $scope.ass.length ; i++) {
+        if ($scope.getStatus(i) == "进行中") {
+          $scope.availableNum++;
+          if ($scope.ass[i].source.length != 0) {
+            $scope.judging++;
+          }
+        } else if ($scope.getStatus(i) == "未开始") {
+          $scope.coming++;
+        } else {
+          $scope.completed++;
+        }
+      }
       console.log('/** Successfully get Assignment Datas **/');
     });
+
+  $scope.getAvailable = function() {
+    return $scope.availableNum;
+  };
+
+  $scope.canJudge = function(index) {
+    if ($scope.getStatus(index) == "已结束") {
+      return true;
+    } else {
+      return false;
+    }
+  }
+  $scope.getJudging = function() {
+    return $scope.judging;
+  };
+
+  $scope.getCompleted = function() {
+    return $scope.completed;
+  };
+
+  $scope.getComing = function() {
+    return $scope.coming;
+  }
+  // $http.get('/api/assignments').
+  //   success(function(data, status , headers , config) {
+  //     $scope.ass = data.assignments;
+  //     console.log('/** Successfully get Assignment Datas **/');
+  //   });
+  $scope.searchFilter = function(item) {
+      if (!$scope.keyWord || $scope.keyWord == '') {
+        return true;
+      } else {
+        var cmp1 = item.job.title.toLowerCase();
+        var cmp2 = $scope.keyWord.toLowerCase();
+        if (cmp1.search(cmp2) != -1) {
+          return true;
+        } else {
+          return false;
+        }
+      }
+  };
   $scope.getStatus = function(index) {
     var date = new Date();
     var str = date.getTime();
     if (str < parseInt($scope.ass[index].timeStamp)) {
-      return "Coming";
+      return "未开始";
     } else if (str <= parseInt($scope.ass[index].finished)) {
-      return "Running";
+      return "进行中";
     } else {
-      return "Finished";
+      return "已结束";
     }
   };
   $scope.getTimeMessage = function(index) {
     var starts = new Date($scope.ass[index].timeStamp);
     var ends = new Date($scope.ass[index].finished);
-    if ($scope.getStatus(index) == "Coming") {
-      var str = "Starts at:" + starts.toDateString() + " " + starts.toTimeString();
+    if ($scope.getStatus(index) == "未开始") {
+      var str = "开始时间： " + starts.toDateString() + " " + starts.toTimeString();
       return str;
     } else {
-      var str = "Ends at:" + ends.toDateString() + " " + ends.toTimeString();
+      var str = "结束时间： " + ends.toDateString() + " " + ends.toTimeString();
       return str;
     }
   };
@@ -139,22 +196,34 @@ function TeacherCtrl($scope , $http , $location) {
       var timeStamp = parseInt($scope.ass[index].timeStamp);
       var finished = parseInt($scope.ass[index].finished);
       if (date < timeStamp) {
-        return "Coming";
+        return "未开始";
       } else if (date <= finished) {
-        return "Running";
+        return "进行中";
       } else {
-        return "Finished!";
+        return "已完成";
       }
     };
-
+    $scope.searchFilter = function(item) {
+      if (!$scope.keyWord || $scope.keyWord == '') {
+        return true;
+      } else {
+        var cmp1 = item.job.title.toLowerCase();
+        var cmp2 = $scope.keyWord.toLowerCase();
+        if (cmp1.search(cmp2) != -1) {
+          return true;
+        } else {
+          return false;
+        }
+      }
+    };
     $scope.getTimeMessage = function(index) {
       var starts = new Date($scope.ass[index].timeStamp);
       var ends = new Date($scope.ass[index].finished);
-      if ($scope.getStatus(index) == "Coming") {
-        var str = "Starts at: " + starts.toDateString() + " " + starts.toTimeString();
+      if ($scope.getStatus(index) == "未开始") {
+        var str = "开始时间: " + starts.toDateString() + " " + starts.toTimeString();
         return str;
       } else {
-        var str = "Ends at: " + ends.toDateString() + " " + ends.toTimeString();
+        var str = "结束时间: " + ends.toDateString() + " " + ends.toTimeString();
         return str;
       }
     };
@@ -176,40 +245,40 @@ function PostAssCtrl($scope , $http , $location) {
     $scope.starts.second = date.getSeconds();
     $scope.getMsg = function() {
       if (!$scope.form.title || $scope.form.title == '') {
-        return "Title is Required!";
+        return "标题是必须提供的";
       } else if (!$scope.form.description || $scope.form.description == '') {
-        return "Description is Required!";
+        return "描述页面是必须提供的";
       } else if (!$scope.start.year || $scope.start.year == '') {
-        return "Year is Required!";
+        return "年是必须提供的";
       } else if (isNaN($scope.start.year)) {
-        return "Year is A Integer!";
+        return "年必须是一个整数";
       } else if (parseInt($scope.start.year) < $scope.starts.year) {
-        return "Year Must >= " + $scope.starts.year;
+        return "年份必须 >= " + $scope.starts.year;
       } else if (!$scope.start.month || $scope.start.month == '') {
-        return "month is Required!";
+        return "月是必须提供的";
       } else if (isNaN($scope.start.month)) {
-        return "month is A Integer!";
+        return "月必须是一个整数";
       } else if (!$scope.start.day || $scope.start.day == '') {
-        return "day is Required!";
+        return "日是必须提供的";
       } else if (isNaN($scope.start.day)) {
-        return "day is A Integer!";
+        return "日必须是一个整数";
       } else if (!$scope.start.hour || $scope.start.hour == '') {
-        return "hour is Required!";
+        return "时是必须提供的";
       } else if (isNaN($scope.start.hour)) {
-        return "hour is A Integer!";
+        return "时必须是一个整数";
       } else if (!$scope.start.minute || $scope.start.minute == '') {
-        return "minute is Required!";
+        return "分是必须提供的";
       } else if (isNaN($scope.start.minute)) {
-        return "minute is A Integer!";
+        return "分必须是一个整数";
       } else if (!$scope.start.second || $scope.start.second == '') {
-        return "second is Required!";
+        return "秒是必须提供的";
       } else if (isNaN($scope.start.second)) {
-        return "second is A Integer!";
+        return "秒必须是一个整数";
       } else {
         var one = date.getTime();
         var two = (new Date(parseInt($scope.start.year) , parseInt($scope.start.month - 1) , parseInt($scope.start.day) , parseInt($scope.start.hour) , parseInt($scope.start.minute) , parseInt($scope.start.second))).getTime();
         if (one > two) {
-          return "You can't Use this time!";
+          return "您不能发布开始于过去的作业!";
         } else {
           return "OK";
         }
@@ -221,6 +290,9 @@ function PostAssCtrl($scope , $http , $location) {
       } else {
         return false;
       }
+    };
+    $scope.returnHome = function() {
+      $location.path('/');
     };
     $scope.postAssignment = function() {
       var myDate = new Date(parseInt($scope.start.year) , parseInt($scope.start.month - 1) , parseInt($scope.start.day) , parseInt($scope.start.hour) , parseInt($scope.start.minute) , parseInt($scope.start.second));
@@ -258,6 +330,8 @@ function IndexCtrl($scope, $http , $location , $window) {
             isTeacher = false;
           } else {
             $location.path('/assignments');
+            isTA = false;
+            isTeacher = false;
           }
         } else {
           // $window.localStorage.isLogin = false;
@@ -295,6 +369,7 @@ function TaCommentCtrl($scope , $http , $location , $routeParams) {
         success(function(data) {
           // console.log("NONONO");
           $scope.sends = data.sends;
+          $scope.sends.reverse();
           $scope.comment = true;
         });
     };
@@ -347,7 +422,7 @@ function TaCommentCtrl($scope , $http , $location , $routeParams) {
         success(function(data){
           // console.log('data.why');
           if (data.status == true) {
-            $location.path('/');
+            $location.path('/taindex');
           }
         });
     };
@@ -402,6 +477,34 @@ function TaCommentCtrl($scope , $http , $location , $routeParams) {
       return x;
     };
 
+
+    $scope.searchFilter = function(item) {
+      if (!$scope.keyWord || $scope.keyWord == '') {
+        return true;
+      } else {
+        var cmp1 = item.id;
+        var cmp2 = $scope.keyWord;
+        if (cmp1.search(cmp2) != -1) {
+          return true;
+        } else {
+          return false;
+        }
+      }
+    };
+
+    $scope.searchFilters = function(item) {
+      if (!$scope.keyWord || $scope.keyWord == '') {
+        return true;
+      } else {
+        var cmp1 = item.receiverId;
+        var cmp2 = $scope.keyWord;
+        if (cmp1.search(cmp2) != -1) {
+          return true;
+        } else {
+          return false;
+        }
+      }
+    };
     // $scope.getSendComment = function(index) {
 
     // }
@@ -411,25 +514,29 @@ function JudgeCtrl($scope , $http , $location , $routeParams) {
   $scope.student = $routeParams.studentId;
   $scope.assName = $routeParams.id;
   $scope.submission = $routeParams.subIndex;
-  console.log($scope.student);
-  console.log($scope.assName);
-  console.log($scope.submission);
   $scope.form = {};
   $scope.form.subId = $scope.submission;
   $scope.warningMsg = '';
+  $http.get('/getStuID/' + $routeParams.studentId).
+    success(function(data) {
+      $scope.student = data.username;
+    });
+  $scope.getStudent = function() {
+    return $scope.student;
+  };
   $scope.getMsg = function() {
     if (!$scope.form.title || $scope.form.title == '') {
-      return "Title is Required!";
+      return "请输入评论标题！";
     } else if (!$scope.form.body || $scope.form.body == '') {
-      return "Body is Required!";
+      return "请输入评论内容！";
     } else if (!$scope.form.score || $scope.form.score == '') {
-      return "Score is Required!";
+      return "请输入评价分数！";
     } else if (isNaN($scope.form.score)) {
-      return "Score is A Integer!";
+      return "分数必须是一个整数！";
     } else if (parseInt($scope.form.score) < 0) {
-      return "Score Must > 0";
+      return "分数必须 > 0";
     } else if (parseInt($scope.form.score) > 100) {
-      return "Score Must < 100";
+      return "分数必须 < 100";
     } else {
       return "OK";
     }
@@ -440,6 +547,9 @@ function JudgeCtrl($scope , $http , $location , $routeParams) {
     } else {
       return false;
     }
+  };
+  $scope.returnHome = function() {
+    $location.path('/taComment/' + $routeParams.id);
   };
   $scope.postJudge = function() {
     $http.post('/postJudge/' + $routeParams.id + '/' + $routeParams.studentId + '/' + $routeParams.subIndex, $scope.form).
@@ -458,6 +568,9 @@ function RejudgeCtrl($scope , $http , $location , $routeParams) {
       .success(function(data) {
         if (data.status == true) $location.path('/teacherComment/' + $routeParams.id);
       });
+  };
+  $scope.returnHome = function() {
+    $location.path('/teacherComment/' + $routeParams.id);
   };
   $scope.getMsg = function() {
     if (!$scope.form.title || $scope.form.title == '') {
@@ -578,12 +691,12 @@ function AssCtrl($scope , $http , $location , $window) {
     success(function(data, status , headers , config) {
       $scope.ass = data.assignments;
       for (var i = 0 ; i < $scope.ass.length ; i++) {
-        if ($scope.getStatus(i) == "Running") {
+        if ($scope.getStatus(i) == "进行中") {
           $scope.availableNum++;
           if ($scope.ass[i].source.length != 0) {
             $scope.judging++;
           }
-        } else if ($scope.getStatus(i) == "Coming") {
+        } else if ($scope.getStatus(i) == "未开始") {
           $scope.coming++;
         } else {
           $scope.completed++;
@@ -615,7 +728,7 @@ function AssCtrl($scope , $http , $location , $window) {
   }
 
   $scope.available = function(index) {
-    if ($scope.getStatus(index) == "Running") {
+    if ($scope.getStatus(index) == "进行中") {
       return true;
     } else {
       return false;
@@ -626,7 +739,7 @@ function AssCtrl($scope , $http , $location , $window) {
     if ($scope.ass[index].position != '-1') {
       return $scope.ass[index].position;
     } else {
-      return 'No Rank';
+      return '无排名';
     }
   };
 
@@ -634,7 +747,7 @@ function AssCtrl($scope , $http , $location , $window) {
     if ($scope.ass[index].taComment.length > 0) {
       return $scope.ass[index].taComment[0].score;
     } else {
-      return "No Score";
+      return "未评分";
     }
   };
 
@@ -642,7 +755,7 @@ function AssCtrl($scope , $http , $location , $window) {
     if ($scope.ass[index].rank != '-1') {
       return $scope.ass[index].rank;
     } else {
-      return 'No Rank';
+      return '无排名';
     }
   };
 
@@ -653,14 +766,30 @@ function AssCtrl($scope , $http , $location , $window) {
       return $scope.ass[id].source[$scope.ass[id].source.length - 1];
     }
   };
+
+  $scope.searchFilter = function(item) {
+    if (!$scope.keyWord || $scope.keyWord == '') {
+      return true;
+    } else {
+      var cmp1 = $scope.keyWord.toLowerCase();
+      var cmp2 = item.job.title.toLowerCase();
+      if (cmp2.search(cmp1) != '-1') {
+        return true;
+      } else {
+        return false;
+      }
+    }
+  };
+
+
   var date = (new Date()).getTime();
   $scope.getStatus = function(index) {
     if (date < parseInt($scope.ass[index].timeStamp)) {
-      return "Coming";
+      return "未开始";
     } else if (date <= parseInt($scope.ass[index].finished)) {
-      return "Running";
+      return "进行中";
     } else {
-      return "Finished";
+      return "已完成";
     }
   };
 
@@ -679,11 +808,11 @@ function AssCtrl($scope , $http , $location , $window) {
   $scope.getTimeMessage = function(index) {
     var starts = new Date($scope.ass[index].timeStamp);
     var ends = new Date($scope.ass[index].finished);
-    if ($scope.getStatus(index) == "Coming") {
-      var str = "Starts at: " + starts.toDateString() + " " + starts.toTimeString();
+    if ($scope.getStatus(index) == "未开始") {
+      var str = "开始时间: " + starts.toDateString() + " " + starts.toTimeString();
       return str;
     } else {
-      var str = "Ends at: " + ends.toDateString() + " " + ends.toTimeString();
+      var str = "结束时间: " + ends.toDateString() + " " + ends.toTimeString();
       return str;
     }
   };
@@ -693,6 +822,9 @@ function AssCtrl($scope , $http , $location , $window) {
 function UploadCtrl($scope , $http , $location , $routeParams) {
   // $scope.getSync = function() {
     $scope.id = $routeParams.id;
+    $scope.home = function() {
+      $location.path('/');
+    };
   // }
 }
 
@@ -712,6 +844,13 @@ function CommentCtrl($scope , $http , $location , $routeParams) {
     $scope.sends = [];
     $scope.recvs = [];
     $scope.tas = [];
+    $http.get('/api/sendComment/' + $routeParams.id).
+      success(function(data) {
+        $scope.sends = data.sends;
+        $scope.send = true;
+        $scope.recv = false;
+        $scope.ta = false;
+      });
     $scope.getAss = function() {
       return $routeParams.id;
     };
@@ -735,6 +874,19 @@ function CommentCtrl($scope , $http , $location , $routeParams) {
         return true;
       }
     };
+    $scope.searchFilter = function(item) {
+      if (!$scope.keyWord || $scope.keyWord == '') {
+        return true;
+      } else {
+        var cmp1 = item.title.toLowerCase();
+        var cmp2 = $scope.keyWord.toLowerCase();
+        if (cmp1.search(cmp2) != -1) {
+          return true;
+        } else {
+          return false;
+        }
+      }
+    };
 
     $scope.sendComments = function() {
         $http.get('/api/sendComment/' + $routeParams.id).
@@ -750,6 +902,7 @@ function CommentCtrl($scope , $http , $location , $routeParams) {
         $http.get('/api/recvComment/' + $routeParams.id).
           success(function(data) {
             $scope.recvs = data.recvs;
+            $scope.recvs.reverse();
             $scope.send = false;
             $scope.recv = true;
             $scope.ta = false;
@@ -853,24 +1006,27 @@ function LogoutCtrl($scope , $http , $location , $window) {
 function SendCtrl($scope , $http , $routeParams , $location) {
     $scope.form = {};
     $scope.comment = {};
-    $http.get('/api/getValue').
+    $http.get('/api/getValue/' + $routeParams.id + '/' + $routeParams.commentId).
       success(function(data) {
         $scope.comment = data.comment;
         console.log(data.why);
       });
+    $scope.returnHome = function() {
+      $location.path('/comment/' + $routeParams.id);
+    };
     $scope.getMsg = function() {
       if (!$scope.form.title || $scope.form.title == '') {
-        return "Title is Required!";
+        return "请输入评论标题!";
       } else if (!$scope.form.body || $scope.form.body == '') {
-        return "Body is Required!";
+        return "请输入评论内容!";
       } else if (!$scope.form.score || $scope.form.score == '') {
-        return "Score is Required!";
+        return "请输入评价分数!";
       } else if (isNaN($scope.form.score)) {
-        return "Score is A Integer!";
+        return "分数必须是一个整数!";
       } else if (parseInt($scope.form.score) < 0) {
-        return "Score Must > 0";
+        return "分数必须 > 0";
       } else if (parseInt($scope.form.score) > 100) {
-        return "Score Must < 100";
+        return "分数必须 < 100";
       } else {
         return "OK";
       }
@@ -918,11 +1074,14 @@ function RegisterCtrl($scope , $http , $location , $routeParams , $window) {
 function TeacherCommentCtrl($scope , $http , $location , $routeParams) {
   $scope.count = 0;
   $scope.data = [];
-  $http.get('/teachers').
+  $http.get('/teachers/' + $routeParams.id).
     success(function(data) {
       $scope.data = data.judgeStudents;
+      $scope.count = data.counters;
     });
-
+  $scope.getCount = function() {
+    return $scope.count;
+  };
   $scope.sortStudents = function() {
     $http.get('/sortByTeacher/' + $routeParams.id).
       success(function(data) {
@@ -968,6 +1127,19 @@ function TeacherCommentCtrl($scope , $http , $location , $routeParams) {
     }
   };
 
+  $scope.searchFilter = function(item) {
+    if (!$scope.keyWord || $scope.keyWord == '') {
+      return true;
+    } else {
+      var cmp1 = item.id;
+      var cmp2 = $scope.keyWord;
+      if (cmp1.search(cmp2) != '-1') {
+        return true;
+      } else {
+        return false;
+      }
+    }
+  };
   $scope.getGithub = function(index) {
     if (!$scope.haveGithub(index)) {
       return '/';

@@ -1,0 +1,26 @@
+extends layout
+
+block body
+  div(ng-controller='mainCtrl')
+    h2 My Achievements
+    ul
+      li
+        a(href='/') Home
+      li
+        p(href='/login' , ng-hide='showAuth()') Guest
+        p(ng-show='showAuth()') {{currentUser}}
+      li
+        a(ng-href='/' , ng-show='showAuth()') {{getIdentity()}}
+        a(ng-href='/login' , ng-hide='showAuth()') Login
+      li
+        a(href='/register' , ng-hide='showAuth()') Init
+        a(href='/logout' , ng-show='showAuth()') Log Out!
+
+    div(ng-view)
+
+  script(src='js/lib/angular/angular.js')
+  script(src='js/app.js')
+  script(src='js/services.js')
+  script(src='js/controllers.js')
+  script(src='js/filters.js')
+  script(src='js/directives.js')

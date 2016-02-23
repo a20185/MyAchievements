@@ -1,18 +1,23 @@
-h2 Welcome, Teacher {{currentUser}}
-p You have assigned {{ass.length}} assignments in total.
+h2 欢迎回来，亲爱的老师
+p 您总共布置了 {{ass.length}} 个作业.
 
 div
-  p You can 
-    a(ng-href='/newAss') Post A new Assignment
+  p 您可以 &nbsp;&nbsp;&nbsp;
+    a(ng-href='/newAss' , role='button').btn.btn-lg.btn-success 发布新作业
 
-div(ng-repeat='assignment in ass')
-  h3 Homework {{assignment.job.index + 1}} : {{assignment.job.title}} , [status: {{getStatus(assignment.index)}}].
+h1 搜索作业题目 : 
+  input(ng-model='keyWord' , type='text' , autofocus='')
+br
+div.container-fluid
+  div.row
+    div.col-md-4(ng-repeat='assignment in ass  | filter : searchFilter')
+      div.jumbotron
+        h3(align='left') 作业{{assignment.job.index + 1}} : {{assignment.job.title}}.
+        p.lead(align='left') [状态: {{getStatus(assignment.index)}}].
 
-  //a(href='/submission/{{assignment.index}}') Submit Now!
-  //br
-  p {{getTimeMessage(assignment.index)}}
-  a(ng-href='/teacherComment/{{assignment.index}}') Judge Students' Submissions
-  br
+        p {{getTimeMessage(assignment.index)}}
+        a(ng-href='/teacherComment/{{assignment.index}}' , role='button').btn.btn-lg.btn-primary.btn-block 检查情况与重新评审
+        br
 
-  a(href='{{assignment.job.refer}}') Description
-  |  -
+        a(href='{{assignment.job.refer}}' , role='button').btn.btn-small.btn-success 题目详情页
+        |  -

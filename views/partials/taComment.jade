@@ -1,30 +1,40 @@
-h1 Judge on Homework {{getIndex()}}.
-p You have already Judge {{count}} Students.
-p You can choose to 
-	button(ng-click='getSort()') Sort The Student By Score
-p Or Display Your
-	button(ng-click='sender()' , ng-hide='showHide()') Send Comments
-	button(ng-click='getJudgeList()' , ng-show='showHide()') Judge Lists
-div(ng-repeat = 'student in data' , ng-hide='showHide()')
-	h3 Student {{student.id}}
-	div(ng-hide='getLength(student.index)') This Student haven't Post any Assignments Yet
-	div(ng-show='getLength(student.index)')
-		div(ng-show='neverJudged(student.index)')
-			p Download His Latest Source 
-				a(ng-href='{{getLocation(student.index)}}') {{getName(student.index)}}
-			p(ng-show='haveGithub(student.index)') his Github URL
-				a(ng-href='getGithub(student.index)') {{getGithub(student.index)}}.
-			br
-			a(ng-href='{{getHref(student.index)}}') Judge Him!
-		div(ng-hide='neverJudged(student.index)')
-			p You have already Judged this Student.
-h3(ng-show='showHide()') Total Sent {{sends.length}} Comments.
-div(ng-repeat = 'send in sends' , ng-show='showHide()')
-	h4 {{send.title}}
-	h6(align='right') --- Judged to {{send.receiverId}} , Edited on {{getTime(send.timeStamp)}}.
-	p {{send.body}}
-	p Evaluation: {{send.score}} points.
-	br
-	a(ng-href='{{send.receiverSource}}') Download his Source
-	|  -
-	a(ng-show='haveAGithub(send)' , ng-href='{{send.receiverGithub}}') Github Address
+div.blogBox
+	p.lead 您已经评审了 {{count}}/20 位学生，辛苦了！
+	p.lead 您可以选择 &nbsp; &nbsp;
+		button(ng-click='getSort()').btn.btn-lg.btn-success 给已评审的学生排名
+	p.lead 或者显示您  &nbsp; &nbsp;
+		button(ng-click='sender()' , ng-hide='showHide()').btn.btn-lg.btn-primary 已发出的评论
+		button(ng-click='getJudgeList()' , ng-show='showHide()').btn.btn-lg.btn-success 评论学生列表
+h1 搜索学生id: 
+	input(ng-model='keyWord' , type='text' , autofocus='')
+br
+div.container-fluid
+	div.row
+		div.col-md-4(ng-repeat = 'student in data | filter : searchFilter' , ng-hide='showHide()')
+			div.jumbotron
+				h3(align='left') 学生编号: {{student.id}}
+				div(ng-hide='getLength(student.index)') 
+					p 该学生还未上传源代码
+				div(ng-show='getLength(student.index)')
+					div(ng-show='neverJudged(student.index)')
+						p.lead(align=left) 最新源代码: 
+							a(ng-href='{{getLocation(student.index)}}' , role='button').btn.btn-success {{getName(student.index)}}
+						p.lead(ng-show='haveGithub(student.index)', align='left') Github地址: 
+							a(ng-href='getGithub(student.index)' , role='button').btn.btn-default {{getGithub(student.index)}}.
+						br
+						a(ng-href='{{getHref(student.index)}}' , role='button').btn.btn-lg.btn-primary.btn-block 马上给他评分
+					div(ng-hide='neverJudged(student.index)')
+						p 您已经评审过这位同学了.
+
+h3(ng-show='showHide()') 我一共发出了 {{sends.length}} 条评论.
+div(ng-repeat = 'send in sends | filter : searchFilters' , ng-show='showHide()').marginBox
+	div.jumbotron.blogBox
+		h4.lead(align=left) 标题： {{send.title}}
+		h6(align='right') --- 评论给： {{send.receiverId}} , 最后编辑：{{getTime(send.timeStamp)}}.
+		br
+		p(align='left') {{send.body}}
+		p 评价: {{send.score}} 分.
+		br
+		a(ng-href='{{send.receiverSource}}' , role='button').btn.btn-success 下载源码
+		|  -
+		a(ng-show='haveAGithub(send)' , ng-href='{{send.receiverGithub}}' , role='button').btn.btn-primary Github

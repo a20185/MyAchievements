@@ -1,11 +1,16 @@
-h1 You're Rejudging Student {{name}} of Assignment {{number}}
-s
-p title:
-input(ng-model='form.title', name='title')
-p body:
-textarea(ng-model='form.body', cols='50', rows='15')
-p Score:
-input(ng-model='form.score' , name='score')
-p
-  p(ng-hide='canClick()') {{getMsg()}}
-  button(ng-click='reJudge()' , ng-show='canClick()') Rejudge Him!
+form.form-editpost(align='center')
+	h2.form-editpost-heading(align='left') 您正在对学生 {{name}} 的第{{number}}次作业进行重新评判
+
+	input(ng-model='form.title' , name='title', type='text' , required="" ,  autofocus="" , placeholder='请输入评论标题').form-control
+	br
+
+	textarea(ng-model='form.body' , name='body' , placeholder='请输入评论内容', type='text' , cols='50', rows='15').form-control
+	br
+
+	input(ng-model='form.score' , name='score', type='text' , placeholder='请输入分数').form-control
+	br
+
+	div
+		button(ng-hide='canClick()').btn.btn-lg.btn-danger.btn-block {{getMsg()}}
+		button(ng-click='reJudge()' , ng-show='canClick()').btn.btn-lg.btn-success.btn-block Send!
+		button.btn.btn-lg.btn-default.btn-block(type="button" , ng-click='returnHome()') 返回

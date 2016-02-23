@@ -1,10 +1,16 @@
-h2 Comment on {{student}} of Assignment {{assName}}
-p title:
-input(ng-model='form.title', name='title')
-p body:
-textarea(ng-model='form.body', cols='50', rows='15')
-p Score:
-input(ng-model='form.score' , name='score')
-p
-  p(ng-hide='canClick()') {{getMsg()}}
-  button(ng-click='postJudge()' , ng-show='canClick()') Post Judgements!
+form.form-editpost(align='center')
+	h2.form-editpost-heading(align='left') 发送评论给 {{getStudent()}}
+
+	input(ng-model='form.title' , name='title', type='text' , required="" ,  autofocus="" , placeholder='请输入评论标题').form-control
+	br
+
+	textarea(ng-model='form.body' , name='body' , placeholder='请输入评论内容', type='text' , cols='50', rows='15').form-control
+	br
+
+	input(ng-model='form.score' , name='score', type='text' , placeholder='请输入分数').form-control
+	br
+
+	div
+		button(ng-hide='canClick()').btn.btn-lg.btn-danger.btn-block {{getMsg()}}
+		button(ng-click='postJudge()' , ng-show='canClick()').btn.btn-lg.btn-success.btn-block 马上评审
+		button.btn.btn-lg.btn-default.btn-block(type="button" , ng-click='returnHome()') 返回

@@ -1,49 +1,61 @@
-h1 Comment Page for Assignment {{assname}}
+label.lead 评论系统
+br
 
-button(ng-click='sendComments()') My Sent Comments
+button(ng-click='sendComments()').btn.btn-lg.btn-primary 发出的评论
+|  -
+button(ng-click='recvComments()').btn.btn-lg.btn-success 收到的评论
+|  -
+button(ng-click='getScore()').btn.btn-lg.btn-danger 最终的分数
 br
-button(ng-click='recvComments()') My Recv Comments
+
+h1 搜索评论(标题) : 
+  input(ng-model='keyWord' , type='text' , autofocus='')
 br
-button(ng-click='getScore()') my Final Scores
+
 div
     div(ng-show='sent()')
-        h3 Total Sent {{sends.length}} Comments.
-        div(ng-repeat='comment in sends')
-            div(ng-show='editBefore(comment.score)')
-                h4 {{comment.title}}
-                h6(align='right') --- Commented to {{comment.receiverId}} , Edited on {{getTime(comment.timeStamp)}}.
-                p {{comment.body}}
-                p Evaluation: {{comment.score}} points.
-                br
-                a(ng-href='/edit/{{getAss()}}/{{comment.index}}') Edit this Comment
+        h3 我一共发出了 {{sends.length}} 条评论.
+        div(ng-repeat='comment in sends | filter : searchFilter')
+            div.jumbotron.blogBox
+                div(ng-show='editBefore(comment.score)')
+                    h4.lead(align='left') 标题：{{comment.title}}
+                    h6(align='right') --- 评论给： {{comment.receiverId}} , 最后编辑：{{getTime(comment.timeStamp)}}.
+                    br
+                    br
+                    p(align='left') {{comment.body}}
+                    p.lead 评价: {{comment.score}} 分.
+                    br
+                    a(ng-href='/edit/{{getAss()}}/{{comment.index}}' , role='button').btn.btn-lg.btn-info.btn-block 编辑这条评论
+                    |  -
+                div(ng-hide='editBefore(comment.score)')
+                    a(ng-href='/edit/{{getAss()}}/{{comment.index}}' , role='button').btn.btn-lg.btn-primary.btn-block 撰写评论
+                    p.lead()  --- 给 {{comment.receiverId}}
+                a(ng-href='{{comment.receiverSource}}' , role='button').btn.btn-success 下载他的源码
                 |  -
-            div(ng-hide='editBefore(comment.score)')
-                a(ng-href='/edit/{{getAss()}}/{{comment.index}}') Write Comment
-                |  -
-                p to {{comment.receiverId}}
-            a(ng-href='{{comment.receiverSource}}') Download his Source
-            |  -
-            a(ng-show='haveGithub(comment)' , ng-href='{{comment.receiverGithub}}') Github Address
+                a(ng-show='haveGithub(comment)' , ng-href='{{comment.receiverGithub}}' , role='button').btn.btn-danger Github地址
 
     div(ng-show='recd()')
-        h3 Total Recevied {{recvs.length}} Comments.
-        div(ng-repeat='comment in recvs')
-            h4 {{comment.title}}
-            h6(align='right') --- Edited on {{getTime(comment.timeStamp)}} , of Submission 
-                a(ng-href='{{comment.receiverSource}}') {{getName(comment.receiverSource)}}
-            p {{comment.body}}
-            p Evaluation: {{comment.score}} points.
-            p(ng-show='haveGithub(comment)') Github Location : 
-                a(ng-href='{{comment.receiverGithub}}') {{comment.receiverGithub}}
+        h3 我一共收到了 {{recvs.length}} 条评论.
+        div(ng-repeat='comment in recvs | filter : searchFilter').marginBox
+            div.jumbotron.blogBox
+                h4.lead(align='left') 标题： {{comment.title}}
+                h6(align='right') --- 最后编辑： {{getTime(comment.timeStamp)}} , 评论文件 
+                    a(ng-href='{{comment.receiverSource}}') {{getName(comment.receiverSource)}}
+                p(align='left') {{comment.body}}
+                p 评价: {{comment.score}} 分.
+                br
+                a(ng-show='haveGithub(comment)' , ng-href='{{comment.receiverGithub}}' , role='button').btn.btn-danger Github地址
+                br
 
     div(ng-show='tata()')
-        div(ng-show='haveTAComment()')
-            h3 Final Score : {{taComment[0].score}}.
-            p Ta Comments: {{taComment[0].title}}
-            h6(align=right) --- Edited on {{getTime(taComment[0].timeStamp)}} , of your final Submission 
+        div(ng-show='haveTAComment()').jumbotron.blogBox
+            h3 最终分数： {{taComment[0].score}} 分.
+            p.lead(align-left) 评论标题: {{taComment[0].title}}
+            h6(align=right) --- 最后编辑： {{getTime(taComment[0].timeStamp)}} , 评论文件： 
                 a(ng-href='{{taComment[0].receiverSource}}') {{getName(taComment[0].receiverSource)}}
-            p {{taComment[0].body}}
+            p(align='left') {{taComment[0].body}}
         div(ng-hide='haveTAComment()')
-            p TA haven't Judge On You.
-            p Probably You haven't Upload Your Source or TA is busy now!
-            p Please Wait Or Contact Your TA!
+            p.lead TA还没有对你的作业进行评审
+            p.lead 可能是TA太忙了
+            p.lead 请耐心等待
+            p.lead 如果确认作业已经提交，请联系你的TA
